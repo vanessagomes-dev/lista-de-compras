@@ -329,6 +329,56 @@ body {
     flex-direction: column;
     gap: 12px;
 }
+.listas-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.lista-card {
+  flex: 1 1 200px;
+  padding: 20px;
+  border-radius: 12px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.3s;
+}
+
+.lista-card:hover {
+  transform: scale(1.05);
+}
+
+/* cores de cada tipo */
+.card-dia {
+  background: #3B82F6;
+}
+.card-dia:hover {
+  background: #2563eb; 
+}
+
+.card-semana {
+  background: #10B981;
+}
+.card-semana:hover {
+  background: #059669;
+}
+
+.card-quinzena {
+  background: #F59E0B;
+}
+.card-quinzena:hover {
+  background: #d97706;
+}
+
+.card-mes {
+  background: #8B5CF6;
+}
+.card-mes:hover {
+  background: #7c3aed;
+}
 
 .item {
     display: flex;
@@ -357,6 +407,38 @@ body {
     gap: 8px;
     align-items: center;
 }
+/* Hover nos itens */
+.item:hover {
+  border-color: var(--color-brand);
+  cursor: pointer;
+}
+
+/* Foco com teclado ou elementos internos */
+.item:focus-within {
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 2px rgba(202, 56, 132, 0.25);
+}
+/* Item concluído */
+.item input[type="checkbox"]:checked + .item-title {
+  text-decoration: line-through;
+  color: var(--content-tertiary);
+}
+.btn-voltar-listas {
+  margin: 10px 0;
+  padding: 8px 12px;
+  background: transparent;
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  font-weight: bold;
+  color: var(--content-secundary);
+  cursor: pointer;
+}
+
+.btn-voltar-listas:hover {
+  border-color: var(--color-brand);
+  color: var(--color-brand);
+}
+
 
 .icon-btn {
     background: transparent;
