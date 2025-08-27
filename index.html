@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Lista de Compras</title>
+  <meta name="description" content="Lista de compras simples, acessível e responsiva">
+
+  <!-- Inter font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="bg-primary">
+
+  <!-- Header com logo -->
+  <header class="site-header">
+    <div class="logo-container">
+      <img src="assets/logo.png" alt="Shopping List" class="logo">
+    </div>
+
+    <!-- Menu -->
+    <nav class="main-nav">
+      <ul>
+        <li><a href="#" class="nav-link active" id="nav-home">Home</a></li>
+        <li><a href="#" class="nav-link" id="nav-listas">Minhas Listas</a></li>
+        <li>
+          <button id="btn-config" class="icon-btn nav-link" aria-label="Configurações">
+            <img src="./assets/settings.png" alt="Configurações" class="icon-img">
+          </button>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Painel de configurações -->
+  <div id="config-panel" class="config-panel hidden">
+    <button class="btn-voltar">
+      <svg class="icon-back" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M15 18l-6-6 6-6" stroke="#374151" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" />
+      </svg>
+      Voltar
+    </button>
+
+    <h2>Escolha o tipo de lista</h2>
+    <ul class="lista-opcoes">
+      <li><button class="opcao lista-dia">Lista do Dia</button></li>
+      <li><button class="opcao lista-semana">Lista da Semana</button></li>
+      <li><button class="opcao lista-quinzena">Lista da Quinzena</button></li>
+      <li><button class="opcao lista-mes">Lista do Mês</button></li>
+    </ul>
+  </div>
+
+  <main class="container" id="main" role="main">
+
+    <!-- HOME -->
+    <section id="home-section" class="page-section">
+      <h1 class="title inter-bold">Bem-vindo!</h1>
+      <div class="search-bar">
+        <input type="text" id="search-input" placeholder="Pesquisar produto nas listas...">
+        <button id="btn-search" class="btn">Pesquisar</button>
+      </div>
+
+      <button id="btn-nova-lista" class="btn btn-primary">+ Nova Lista</button>
+    </section>
+
+    <!-- Minhas Listas -->
+    <section id="listas-section" class="page-section hidden">
+      <h2 class="title inter-bold">Minhas Listas</h2>
+      <div id="listas-container" class="listas-container">
+        <!-- até 4 listas serão renderizadas aqui via JS -->
+      </div>
+    </section>
+
+    <!-- Lista de Itens -->
+    <section id="itens-section" class="page-section hidden">
+      <h2 class="title inter-bold">Itens da Lista</h2>
+      <form id="form-adicionar" class="form" aria-label="Adicionar item">
+        <div class="form-row">
+          <input id="input-item" type="text" class="input" placeholder="Adicione um novo item"
+            aria-describedby="hint" autocomplete="off">
+          <button id="btn-adicionar" class="btn" type="submit">
+            Adicionar item
+          </button>
+        </div>
+      </form>
+
+      <ul id="lista-itens" class="lista" role="list" aria-live="polite"></ul>
+    </section>
+
+    <!-- Toast -->
+    <div id="toast" class="toast" role="status" aria-live="assertive" aria-atomic="true" hidden>
+      <img src="assets/warning-circle-filled.png" alt="" class="icon" />
+      <span id="toast-msg"></span>
+      <button class="icon-btn toast-close" aria-label="Fechar notificação">
+        <img src="assets/delete-small.png" alt="Fechar" />
+      </button>
+    </div>
+
+  </main>
+
+  <script src="main.js" defer></script>
+</body>
+
+</html>
