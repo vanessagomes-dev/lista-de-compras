@@ -26,7 +26,6 @@ const inputSearch = document.getElementById("search-input");
 const searchResults = document.getElementById("search-results");
 const btnClearSearch = document.getElementById("btn-clear-search");
 
-
 function showSection(section) {
   // esconde todas
   homeSection.classList.add("hidden");
@@ -178,7 +177,6 @@ function abrirLista(id) {
   }
 }
 
-
 // renderizar categorias + itens
 function renderCategorias() {
   categoriasContainer.innerHTML = "";
@@ -293,19 +291,14 @@ function pesquisar() {
   } else {
     encontrados.forEach((resultado) => {
       const div = document.createElement("div");
-      div.className = "resultado-lista";
+      div.className = `lista-card card-${resultado.lista.tipo} resultado-card`;
+      div.dataset.id = resultado.lista.id;
+
       div.innerHTML = `
-        <h3>Lista de ${resultado.lista.tipo}</h3>
-        <ul>
-          ${resultado.itens
-            .map(
-              (i) =>
-                `<li class="resultado-item" data-id="${resultado.lista.id}">${escapeHtml(
-                  i.text
-                )}</li>`
-            )
-            .join("")}
-        </ul>
+        <span>Lista de ${resultado.lista.tipo}</span>
+        <button class="icon-btn limpar-resultado" title="Remover resultado">
+          <img src="assets/delete-small.png" alt="Limpar">
+        </button>
       `;
       searchResults.appendChild(div);
     });
@@ -326,29 +319,27 @@ inputSearch.addEventListener("keypress", (e) => {
   }
 });
 
-// clique no resultado → abre lista correspondente
+// clique no resultado → abre lista correspondente ou remove resultado
 searchResults.addEventListener("click", (e) => {
-  if (e.target.classList.contains("resultado-item")) {
-    const listaId = Number(e.target.dataset.id);
-    const itemTexto = e.target.textContent;
-
-    // encontrar o item exato dentro da lista
-    const lista = listas.find((l) => l.id === listaId);
-    if (lista) {
-      const item = Object.values(lista.categorias)
-        .flat()
-        .find((i) => i.text === itemTexto);
-      if (item) {
-        abrirLista.destacarId = item.id; // guarda o ID para destacar
-      }
-    }
+  // abrir lista ao clicar no card (mas não no botão de excluir)
+  if (
+    e.target.closest(".resultado-card") &&
+    !e.target.closest(".limpar-resultado")
+  ) {
+    const listaId = Number(e.target.closest(".resultado-card").dataset.id);
     abrirLista(listaId);
   }
-});
-btnClearSearch.addEventListener("click", () => {
-  searchResults.innerHTML = "";
-});
 
+  // clique no ícone de deletar → remove apenas esse resultado
+  if (e.target.closest(".limpar-resultado")) {
+    e.target.closest(".resultado-card").remove();
+
+    // se não restar mais nenhum card, limpa completamente a área de resultados
+    if (!searchResults.querySelector(".resultado-card")) {
+      searchResults.innerHTML = "";
+    }
+  }
+});
 
 // ================== UTILS ==================
 function escapeHtml(str) {
