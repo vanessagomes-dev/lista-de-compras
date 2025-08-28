@@ -331,25 +331,51 @@ body {
 }
 .listas-container {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column; /* uma embaixo da outra */
   gap: 16px;
   margin-top: 20px;
 }
 
 .lista-card {
-  flex: 1 1 200px;
-  padding: 20px;
+  width: 100%;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* nome à esquerda, ícone à direita */
+  padding: 0 20px;
   border-radius: 12px;
   color: white;
   font-weight: bold;
-  text-align: center;
+  font-size: 1.2rem;
   cursor: pointer;
   transition: transform 0.2s, background 0.3s;
 }
 
 .lista-card:hover {
-  transform: scale(1.05);
+  transform: scale(1.02);
 }
+
+.lista-card span {
+  flex: 1;
+  text-align: left;
+}
+
+.lista-card .icon-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lista-card .icon-btn img {
+  width: 20px;
+  height: 20px;
+}
+
 
 /* cores de cada tipo */
 .card-dia {

@@ -36,6 +36,7 @@ function showSection(section) {
     .querySelectorAll(".nav-link")
     .forEach((link) => link.classList.remove("active"));
 }
+
 // Home
 navHome.addEventListener("click", (e) => {
   e.preventDefault();
@@ -75,36 +76,45 @@ btnVoltar.addEventListener("click", () => {
 });
 
 // botão "+ Nova Lista" abre painel
-btn.addEventListener("click", () => {
-  const tipo = btn.dataset.tipo;
+btnNovaLista.addEventListener("click", () => {
+  configPanel.classList.remove("hidden");
+});
 
-  // impede mais de uma lista do mesmo tipo
-  if (listas.some((l) => l.tipo === tipo)) {
-    showToast(`A lista de ${btn.textContent} já foi criada!`);
-    return;
-  }
+// ações ao escolher o tipo da lista
+document.querySelectorAll(".opcao").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const tipo = btn.dataset.tipo;
 
-  const novaLista = {
-    id: Date.now(),
-    tipo,
-    categorias: {
-      limpeza: [],
-      hortifruti: [],
-      mercearia: [],
-      bebidas: [],
-      acougue: [],
-    },
-  };
+    // se já existe uma lista desse tipo, não cria outra
+    if (listas.some((l) => l.tipo === tipo)) {
+      showToast(`A lista de ${btn.textContent} já foi criada!`);
+      configPanel.classList.add("hidden");
+      return;
+    }
 
-  listas.push(novaLista);
-  save();
-  renderListas();
-  configPanel.classList.add("hidden");
+    const novaLista = {
+      id: Date.now(),
+      tipo,
+      categorias: {
+        limpeza: [],
+        hortifruti: [],
+        mercearia: [],
+        bebidas: [],
+        acougue: [],
+      },
+    };
 
-  document.getElementById("home-section").classList.add("hidden");
-  document.getElementById("listas-section").classList.remove("hidden");
+    listas.push(novaLista);
+    save();
+    renderListas();
+    configPanel.classList.add("hidden");
 
-  showToast(`Lista de ${btn.textContent} criada!`);
+    // mostra Minhas Listas
+    showSection(listasSection);
+    navListas.classList.add("active");
+
+    showToast(`Lista de ${btn.textContent} criada!`);
+  });
 });
 
 // renderizar todas listas
@@ -117,7 +127,24 @@ function renderListas() {
   listas.forEach((lista) => {
     const div = document.createElement("div");
     div.className = `lista-card card-${lista.tipo}`;
-    div.textContent = `Lista da ${lista.tipo}`;
+
+    const nome = document.createElement("span");
+    nome.textContent = `Lista de ${lista.tipo}`;
+
+    const btnDelete = document.createElement("button");
+    btnDelete.className = "icon-btn";
+    btnDelete.innerHTML = `<img src="assets/delete.png" alt="Excluir lista">`;
+    btnDelete.addEventListener("click", (e) => {
+      e.stopPropagation(); // impede abrir a lista
+      listas = listas.filter((l) => l.id !== lista.id);
+      save();
+      renderListas();
+      showToast(`Lista de ${lista.tipo} excluída!`);
+    });
+
+    div.appendChild(nome);
+    div.appendChild(btnDelete);
+
     div.addEventListener("click", () => abrirLista(lista.id));
     listasContainer.appendChild(div);
   });
