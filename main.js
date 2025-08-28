@@ -21,6 +21,11 @@ const navListas = document.getElementById("nav-listas");
 const homeSection = document.getElementById("home-section");
 const listasSection = document.getElementById("listas-section");
 const btnVoltarListas = document.getElementById("btn-voltar-listas");
+const btnSearch = document.getElementById("btn-search");
+const inputSearch = document.getElementById("search-input");
+const searchResults = document.getElementById("search-results");
+const btnClearSearch = document.getElementById("btn-clear-search");
+
 
 function showSection(section) {
   // esconde todas
@@ -159,7 +164,20 @@ function abrirLista(id) {
   itensSection.classList.remove("hidden");
   document.getElementById("listas-section").classList.add("hidden");
   document.getElementById("home-section").classList.add("hidden");
+
+  // se veio da pesquisa → destacar item
+  if (abrirLista.destacarId) {
+    const el = categoriasContainer.querySelector(
+      `[data-id="${abrirLista.destacarId}"]`
+    );
+    if (el) {
+      el.classList.add("destacado");
+      setTimeout(() => el.classList.remove("destacado"), 3000);
+    }
+    abrirLista.destacarId = null;
+  }
 }
+
 
 // renderizar categorias + itens
 function renderCategorias() {
@@ -242,7 +260,97 @@ categoriasContainer.addEventListener("click", (e) => {
   }
 });
 
-// utils
+// ================== PESQUISA GLOBAL ==================
+
+function pesquisar() {
+  const termo = inputSearch.value.trim().toLowerCase();
+  searchResults.innerHTML = ""; // limpa resultados
+
+  if (!termo) {
+    searchResults.innerHTML = "<p>Digite um termo para pesquisar.</p>";
+    return;
+  }
+
+  let encontrados = [];
+
+  listas.forEach((lista) => {
+    let itensEncontrados = [];
+    Object.values(lista.categorias).forEach((categoria) => {
+      categoria.forEach((item) => {
+        if (item.text.toLowerCase().includes(termo)) {
+          itensEncontrados.push(item);
+        }
+      });
+    });
+
+    if (itensEncontrados.length > 0) {
+      encontrados.push({ lista, itens: itensEncontrados });
+    }
+  });
+
+  if (encontrados.length === 0) {
+    searchResults.innerHTML = `<p class="nenhum">Item não encontrado.</p>`;
+  } else {
+    encontrados.forEach((resultado) => {
+      const div = document.createElement("div");
+      div.className = "resultado-lista";
+      div.innerHTML = `
+        <h3>Lista de ${resultado.lista.tipo}</h3>
+        <ul>
+          ${resultado.itens
+            .map(
+              (i) =>
+                `<li class="resultado-item" data-id="${resultado.lista.id}">${escapeHtml(
+                  i.text
+                )}</li>`
+            )
+            .join("")}
+        </ul>
+      `;
+      searchResults.appendChild(div);
+    });
+  }
+
+  // limpa campo
+  inputSearch.value = "";
+}
+
+// botão pesquisar
+btnSearch.addEventListener("click", pesquisar);
+
+// enter no campo
+inputSearch.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    pesquisar();
+  }
+});
+
+// clique no resultado → abre lista correspondente
+searchResults.addEventListener("click", (e) => {
+  if (e.target.classList.contains("resultado-item")) {
+    const listaId = Number(e.target.dataset.id);
+    const itemTexto = e.target.textContent;
+
+    // encontrar o item exato dentro da lista
+    const lista = listas.find((l) => l.id === listaId);
+    if (lista) {
+      const item = Object.values(lista.categorias)
+        .flat()
+        .find((i) => i.text === itemTexto);
+      if (item) {
+        abrirLista.destacarId = item.id; // guarda o ID para destacar
+      }
+    }
+    abrirLista(listaId);
+  }
+});
+btnClearSearch.addEventListener("click", () => {
+  searchResults.innerHTML = "";
+});
+
+
+// ================== UTILS ==================
 function escapeHtml(str) {
   return String(str).replace(
     /[&"'<>]/g,

@@ -154,6 +154,28 @@ body {
     padding: 0.5rem;
 }
 
+/* destaque temporário no item aberto via pesquisa */
+.item.destacado {
+  border-color: var(--color-brand);
+  background: rgba(202, 56, 132, 0.1);
+  transition: background 0.3s, border-color 0.3s;
+}
+
+/* botão limpar pesquisa */
+.btn-clear-search {
+  margin-top: 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-clear-search img {
+  width: 18px;
+  height: 18px;
+}
 
 
 /* Form */
@@ -489,12 +511,15 @@ body {
 
 /* Toast */
 .toast {
-    margin-top: 20px;
-    padding: 12px 16px;
-    background: var(--color-danger);
-    color: var(--always-white);
-    border-radius: 8px;
+  margin-top: 20px;
+  padding: 12px 16px;
+  background: var(--color-danger);
+  color: var(--always-white);
+  border-radius: 8px;
+  max-width: 90%;      /* não deixar estourar a tela */
+  word-wrap: break-word; /* quebra texto longo */
 }
+
 
 
 /* Responsividade */
