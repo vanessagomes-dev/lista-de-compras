@@ -94,10 +94,13 @@ navListas.addEventListener("click", (e) => {
   navListas.classList.add("active");
 });
 
+// Voltar da tela "Minhas Listas" para Home
 btnVoltarListas?.addEventListener("click", () => {
-  showSection(listasSection);
-  navListas.classList.add("active");
+  showSection(homeSection);
+  navHome.classList.add("active");
 });
+
+// Voltar da tela "Itens" para "Minhas Listas"
 btnVoltarItens?.addEventListener("click", () => {
   showSection(listasSection);
   navListas.classList.add("active");
