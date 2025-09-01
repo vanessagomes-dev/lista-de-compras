@@ -2,7 +2,6 @@ const STORAGE_KEY = "listasCompras_v1";
 let listas = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
 let listaAtiva = null;
 
-// mapa de nomes das listas
 const TIPOS_LISTA_NOME = {
   dia: "Lista do Dia",
   semana: "Lista da Semana",
@@ -10,40 +9,58 @@ const TIPOS_LISTA_NOME = {
   mes: "Lista do Mês",
 };
 
-// elementos
+// Elements
 const btnConfig = document.getElementById("btn-config");
-const configPanel = document.getElementById("config-panel");
-const btnVoltar = configPanel.querySelector(".btn-voltar");
-const listasContainer = document.getElementById("listas-container");
+const dropdown = document.getElementById("config-dropdown");
+
+const homeSection = document.getElementById("home-section");
+const listasSection = document.getElementById("listas-section");
 const itensSection = document.getElementById("itens-section");
+
+const navHome = document.getElementById("nav-home");
+const navListas = document.getElementById("nav-listas");
+
+const listasContainer = document.getElementById("listas-container");
 const categoriasContainer = document.getElementById("categorias-container");
+
+const tituloLista = document.getElementById("titulo-lista");
+const btnVoltarListas = document.getElementById("btn-voltar-listas");
+const btnVoltarItens = document.getElementById("btn-voltar-itens");
+
 const form = document.getElementById("form-adicionar");
 const inputItem = document.getElementById("input-item");
 const selectCategoria = document.getElementById("select-categoria");
-const toast = document.getElementById("toast");
-const toastMsg = document.getElementById("toast-msg");
-const tituloLista = document.getElementById("titulo-lista");
+
 const btnNovaLista = document.getElementById("btn-nova-lista");
-const navHome = document.getElementById("nav-home");
-const navListas = document.getElementById("nav-listas");
-const homeSection = document.getElementById("home-section");
-const listasSection = document.getElementById("listas-section");
-const btnVoltarListas = document.getElementById("btn-voltar-listas");
+const modalLista = document.getElementById("modal-lista");
+const closeModal = document.getElementById("close-modal");
+
 const btnSearch = document.getElementById("btn-search");
 const inputSearch = document.getElementById("search-input");
 const searchResults = document.getElementById("search-results");
 
-// ================== NAVEGAÇÃO ==================
-function showSection(section) {
-  homeSection.classList.add("hidden");
-  listasSection.classList.add("hidden");
-  itensSection.classList.add("hidden");
+const toast = document.getElementById("toast");
+const toastMsg = document.getElementById("toast-msg");
+const toastClose = document.getElementById("toast-close");
 
-  section.classList.remove("hidden");
+// ====== Helpers ======
+const save = () => localStorage.setItem(STORAGE_KEY, JSON.stringify(listas));
+const show = (el) => el.classList.remove("hidden");
+const hide = (el) => el.classList.add("hidden");
 
-  document.querySelectorAll(".nav-link").forEach((link) => link.classList.remove("active"));
-}
+const showSection = (section) => {
+  hide(homeSection); hide(listasSection); hide(itensSection);
+  show(section);
+  document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
+};
 
+const showToast = (msg, timeout = 2500) => {
+  toastMsg.textContent = msg;
+  toast.hidden = false;
+  setTimeout(() => (toast.hidden = true), timeout);
+};
+
+// ====== Nav ======
 navHome.addEventListener("click", (e) => {
   e.preventDefault();
   showSection(homeSection);
@@ -57,30 +74,63 @@ navListas.addEventListener("click", (e) => {
   navListas.classList.add("active");
 });
 
-btnVoltarListas.addEventListener("click", () => {
+btnVoltarListas?.addEventListener("click", () => {
+  showSection(listasSection);
+  navListas.classList.add("active");
+});
+btnVoltarItens?.addEventListener("click", () => {
   showSection(listasSection);
   navListas.classList.add("active");
 });
 
-// ================== STORAGE + TOAST ==================
-const save = () => localStorage.setItem(STORAGE_KEY, JSON.stringify(listas));
-
-const showToast = (msg, timeout = 2500) => {
-  toastMsg.textContent = msg;
-  toast.hidden = false;
-  setTimeout(() => (toast.hidden = true), timeout);
-};
-
-// ================== CONFIG PAINEL ==================
-btnConfig.addEventListener("click", () => {
-  configPanel.classList.toggle("hidden");
-});
-btnVoltar.addEventListener("click", () => {
-  configPanel.classList.add("hidden");
+// ====== Dropdown Config ======
+btnConfig.addEventListener("click", (e) => {
+  e.stopPropagation();
+  dropdown.classList.toggle("hidden");
+  const expanded = btnConfig.getAttribute("aria-expanded") === "true";
+  btnConfig.setAttribute("aria-expanded", String(!expanded));
 });
 
+document.addEventListener("click", (e) => {
+  if (!dropdown.contains(e.target) && e.target !== btnConfig) {
+    dropdown.classList.add("hidden");
+    btnConfig.setAttribute("aria-expanded", "false");
+  }
+});
+
+// Ações do menu (placeholders)
+document.getElementById("config-colors").addEventListener("click", () => {
+  showToast("Em breve: trocar cores 🎨");
+  dropdown.classList.add("hidden");
+});
+document.getElementById("config-lang").addEventListener("click", () => {
+  showToast("Em breve: trocar idioma 🌍");
+  dropdown.classList.add("hidden");
+});
+document.getElementById("config-share").addEventListener("click", () => {
+  showToast("Em breve: compartilhar lista 🔗");
+  dropdown.classList.add("hidden");
+});
+
+// ====== Modal Nova Lista ======
 btnNovaLista.addEventListener("click", () => {
-  configPanel.classList.remove("hidden");
+  if (listas.length >= 4) {
+    showToast("Limite de 4 listas atingido.");
+    return;
+  }
+  show(modalLista);
+});
+
+closeModal.addEventListener("click", () => hide(modalLista));
+modalLista.addEventListener("click", (e) => {
+  if (e.target === modalLista) hide(modalLista);
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    hide(modalLista);
+    dropdown.classList.add("hidden");
+    btnConfig.setAttribute("aria-expanded", "false");
+  }
 });
 
 document.querySelectorAll(".opcao").forEach((btn) => {
@@ -89,77 +139,73 @@ document.querySelectorAll(".opcao").forEach((btn) => {
 
     if (listas.some((l) => l.tipo === tipo)) {
       showToast(`${TIPOS_LISTA_NOME[tipo]} já foi criada!`);
-      configPanel.classList.add("hidden");
+      hide(modalLista);
+      return;
+    }
+    if (listas.length >= 4) {
+      showToast("Limite de 4 listas atingido.");
+      hide(modalLista);
       return;
     }
 
     const novaLista = {
       id: Date.now(),
       tipo,
-      categorias: {
-        limpeza: [],
-        hortifruti: [],
-        mercearia: [],
-        bebidas: [],
-        acougue: [],
-      },
+      categorias: { limpeza: [], hortifruti: [], mercearia: [], bebidas: [], acougue: [] }
     };
 
     listas.push(novaLista);
     save();
     renderListas();
-    configPanel.classList.add("hidden");
-
+    hide(modalLista);
     showSection(listasSection);
     navListas.classList.add("active");
-
     showToast(`${TIPOS_LISTA_NOME[tipo]} criada!`);
   });
 });
 
-// ================== RENDER LISTAS ==================
+// ====== Render Listas ======
 function renderListas() {
   listasContainer.innerHTML = "";
-  if (listas.length === 0) {
-    listasContainer.innerHTML = "<p>Nenhuma lista criada ainda.</p>";
+  if (!listas.length) {
+    listasContainer.innerHTML = `<p>Nenhuma lista criada ainda.</p>`;
     return;
   }
+
   listas.forEach((lista) => {
-    const div = document.createElement("div");
-    div.className = `lista-card card-${lista.tipo}`;
+    const card = document.createElement("div");
+    card.className = `lista-card card-${lista.tipo}`;
 
     const nome = document.createElement("span");
     nome.textContent = TIPOS_LISTA_NOME[lista.tipo] || `Lista (${lista.tipo})`;
 
-    const btnDelete = document.createElement("button");
-    btnDelete.className = "icon-btn";
-    btnDelete.innerHTML = `<img src="assets/delete.png" alt="Excluir lista">`;
-    btnDelete.addEventListener("click", (e) => {
+    const del = document.createElement("button");
+    del.className = "icon-btn";
+    del.innerHTML = `<img src="assets/delete.png" alt="Excluir lista">`;
+    del.addEventListener("click", (e) => {
       e.stopPropagation();
       listas = listas.filter((l) => l.id !== lista.id);
-      save();
-      renderListas();
+      save(); renderListas();
       showToast(`${TIPOS_LISTA_NOME[lista.tipo]} excluída!`);
     });
 
-    div.appendChild(nome);
-    div.appendChild(btnDelete);
-
-    div.addEventListener("click", () => abrirLista(lista.id));
-    listasContainer.appendChild(div);
+    card.appendChild(nome);
+    card.appendChild(del);
+    card.addEventListener("click", () => abrirLista(lista.id));
+    listasContainer.appendChild(card);
   });
 }
 
-// ================== ABRIR LISTA ==================
+// ====== Abrir Lista ======
 function abrirLista(id) {
   listaAtiva = listas.find((l) => l.id === id);
   if (!listaAtiva) return;
 
   tituloLista.textContent = `${TIPOS_LISTA_NOME[listaAtiva.tipo]} - Itens`;
   renderCategorias();
-  itensSection.classList.remove("hidden");
-  listasSection.classList.add("hidden");
-  homeSection.classList.add("hidden");
+  show(itensSection);
+  hide(listasSection);
+  hide(homeSection);
 
   if (abrirLista.destacarId) {
     const el = categoriasContainer.querySelector(`[data-id="${abrirLista.destacarId}"]`);
@@ -171,13 +217,13 @@ function abrirLista(id) {
   }
 }
 
-// ================== RENDER CATEGORIAS + ITENS ==================
+// ====== Render Categorias / Itens ======
 function renderCategorias() {
   categoriasContainer.innerHTML = "";
   Object.keys(listaAtiva.categorias).forEach((cat) => {
     const ul = document.createElement("ul");
     ul.className = "lista";
-    ul.innerHTML = `<h3 class="inter-semibold">${cat}</h3>`;
+    ul.innerHTML = `<h3>${cat}</h3>`;
     listaAtiva.categorias[cat].forEach((item) => {
       const li = document.createElement("li");
       li.className = "item";
@@ -199,62 +245,48 @@ function renderCategorias() {
   });
 }
 
-// ================== ADICIONAR ITEM ==================
+// ====== Add Item ======
 form.addEventListener("submit", (e) => {
   e.preventDefault();
-  if (!listaAtiva) return;
+  if (!listaAtiva) { showToast("Abra uma lista para adicionar itens."); return; }
 
   const text = inputItem.value.trim();
   const cat = selectCategoria.value;
   if (!text) return;
 
   const listaItens = listaAtiva.categorias[cat];
-  if (listaItens.length >= 10) {
-    showToast("Cada categoria só pode ter até 10 itens.");
-    return;
-  }
+  if (listaItens.length >= 10) { showToast("Cada categoria só pode ter até 10 itens."); return; }
   const totalItens = Object.values(listaAtiva.categorias).flat().length;
-  if (totalItens >= 50) {
-    showToast("Cada lista só pode ter até 50 itens.");
-    return;
-  }
+  if (totalItens >= 50) { showToast("Cada lista só pode ter até 50 itens."); return; }
 
   listaItens.push({ id: Date.now(), text, done: false });
-  save();
-  renderCategorias();
+  save(); renderCategorias();
   inputItem.value = "";
 });
 
-// ================== EVENTOS DE ITENS ==================
+// Toggle / Delete
 categoriasContainer.addEventListener("click", (e) => {
   if (e.target.matches("input[type=checkbox]")) {
     const cat = e.target.dataset.cat;
     const id = Number(e.target.dataset.id);
     const item = listaAtiva.categorias[cat].find((i) => i.id === id);
-    if (item) {
-      item.done = e.target.checked;
-      save();
-    }
+    if (item) { item.done = e.target.checked; save(); }
   }
-  if (e.target.closest("[data-action=delete]")) {
-    const btn = e.target.closest("button");
-    const cat = btn.dataset.cat;
-    const id = Number(btn.dataset.id);
+  const delBtn = e.target.closest("[data-action=delete]");
+  if (delBtn) {
+    const cat = delBtn.dataset.cat;
+    const id = Number(delBtn.dataset.id);
     listaAtiva.categorias[cat] = listaAtiva.categorias[cat].filter((i) => i.id !== id);
-    save();
-    renderCategorias();
+    save(); renderCategorias();
   }
 });
 
-// ================== PESQUISA GLOBAL ==================
+// ====== Pesquisa Global ======
 function pesquisar() {
   const termo = inputSearch.value.trim().toLowerCase();
   searchResults.innerHTML = "";
 
-  if (!termo) {
-    searchResults.innerHTML = "<p>Digite um termo para pesquisar.</p>";
-    return;
-  }
+  if (!termo) { searchResults.innerHTML = "<p>Digite um termo para pesquisar.</p>"; return; }
 
   let encontrados = [];
 
@@ -262,32 +294,33 @@ function pesquisar() {
     let itensEncontrados = [];
     Object.values(lista.categorias).forEach((categoria) => {
       categoria.forEach((item) => {
-        if (item.text.toLowerCase().includes(termo)) {
-          itensEncontrados.push(item);
-        }
+        if (item.text.toLowerCase().includes(termo)) itensEncontrados.push(item);
       });
     });
-
-    if (itensEncontrados.length > 0) {
-      encontrados.push({ lista, itens: itensEncontrados });
-    }
+    if (itensEncontrados.length) encontrados.push({ lista, itens: itensEncontrados });
   });
 
-  if (encontrados.length === 0) {
+  if (!encontrados.length) {
     searchResults.innerHTML = `<p class="nenhum">Item não encontrado.</p>`;
   } else {
-    encontrados.forEach((resultado) => {
-      const div = document.createElement("div");
-      div.className = `lista-card card-${resultado.lista.tipo} resultado-card`;
-      div.dataset.id = resultado.lista.id;
+    encontrados.forEach(({ lista, itens }) => {
+      const wrap = document.createElement("div");
+      wrap.className = `lista-card card-${lista.tipo} resultado-card`;
+      wrap.dataset.id = lista.id;
 
-      div.innerHTML = `
-        <span>${TIPOS_LISTA_NOME[resultado.lista.tipo]}</span>
+      const itensHtml = itens
+        .slice(0, 5)
+        .map((i) => `<span class="tag">${escapeHtml(i.text)}</span>`)
+        .join(" ");
+
+      wrap.innerHTML = `
+        <span>${TIPOS_LISTA_NOME[lista.tipo]}</span>
+        <div>${itensHtml}</div>
         <button class="icon-btn limpar-resultado" title="Remover resultado">
           <img src="assets/delete-small.png" alt="Limpar">
         </button>
       `;
-      searchResults.appendChild(div);
+      searchResults.appendChild(wrap);
     });
   }
 
@@ -296,38 +329,31 @@ function pesquisar() {
 
 btnSearch.addEventListener("click", pesquisar);
 inputSearch.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    pesquisar();
-  }
+  if (e.key === "Enter") { e.preventDefault(); pesquisar(); }
 });
 
 searchResults.addEventListener("click", (e) => {
-  if (e.target.closest(".resultado-card") && !e.target.closest(".limpar-resultado")) {
-    const listaId = Number(e.target.closest(".resultado-card").dataset.id);
-    abrirLista(listaId);
+  const card = e.target.closest(".resultado-card");
+  if (card && !e.target.closest(".limpar-resultado")) {
+    abrirLista(Number(card.dataset.id));
   }
-
   if (e.target.closest(".limpar-resultado")) {
     e.target.closest(".resultado-card").remove();
-    if (!searchResults.querySelector(".resultado-card")) {
-      searchResults.innerHTML = "";
-    }
+    if (!searchResults.querySelector(".resultado-card")) searchResults.innerHTML = "";
   }
 });
 
-// ================== UTILS ==================
+// Toast close
+toastClose.addEventListener("click", () => (toast.hidden = true));
+
+// ====== Utils ======
 function escapeHtml(str) {
   return String(str).replace(/[&"'<>]/g, (tag) =>
-    ({
-      "&": "&amp;",
-      '"': "&quot;",
-      "'": "&#39;",
-      "<": "&lt;",
-      ">": "&gt;",
-    }[tag])
+    ({ "&":"&amp;", '"':"&quot;", "'":"&#39;", "<":"&lt;", ">":"&gt;" }[tag])
   );
 }
 
-// ================== INIT ==================
+// ====== Init ======
 renderListas();
+showSection(homeSection);
+navHome.classList.add("active");
