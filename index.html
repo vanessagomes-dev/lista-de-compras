@@ -19,30 +19,31 @@
 
 <body class="bg-primary">
 
-   <!-- Header -->
-<header class="site-header">
-  <div class="logo-container">
-    <img src="assets/logo.png" alt="Shopping List" class="logo">
-  </div>
-
-  <nav class="main-nav container" aria-label="Navegação principal">
-    <ul class="nav-list">
-      <li><a href="#" class="nav-link active" id="nav-home">Home</a></li>
-      <li><a href="#" class="nav-link" id="nav-listas">Minhas Listas</a></li>
-      <li>
-        <button id="btn-config" class="icon-btn" aria-haspopup="menu" aria-expanded="false" aria-label="Configurações">
-          <img src="assets/settings.png" class="icon-img" alt="Configurações" />
-        </button>
-        <!-- Dropdown de Configurações -->
-        <div id="config-dropdown" class="dropdown hidden" role="menu" aria-label="Configurações">
-          <button id="config-colors" class="dropdown-item" role="menuitem">Cores</button>
-          <button id="config-lang" class="dropdown-item" role="menuitem">Idiomas</button>
-          <button id="config-share" class="dropdown-item" role="menuitem">Compartilhar</button>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="logo-container">
+            <img src="assets/logo.png" alt="Shopping List" class="logo">
         </div>
-      </li>
-    </ul>
-  </nav>
-</header>
+
+        <nav class="main-nav container" aria-label="Navegação principal">
+            <ul class="nav-list">
+                <li><a href="#" class="nav-link active" id="nav-home">Home</a></li>
+                <li><a href="#" class="nav-link" id="nav-listas">Minhas Listas</a></li>
+                <li>
+                    <button id="btn-config" class="icon-btn" aria-haspopup="menu" aria-expanded="false"
+                        aria-label="Configurações">
+                        <img src="assets/settings.png" class="icon-img" alt="Configurações" />
+                    </button>
+                    <!-- Dropdown de Configurações -->
+                    <div id="config-dropdown" class="dropdown hidden" role="menu" aria-label="Configurações">
+                        <button id="config-colors" class="dropdown-item" role="menuitem">Cores</button>
+                        <button id="config-lang" class="dropdown-item" role="menuitem">Idiomas</button>
+                        <button id="config-share" class="dropdown-item" role="menuitem">Compartilhar</button>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
 
 
     <main id="main" role="main">
@@ -64,7 +65,7 @@
 
             <!-- CTA Nova Lista -->
             <div class="new-list-cta">
-                <button id="btn-nova-lista" class="btn-outline">Iniciar nova lista</button>
+                <button id="btn-nova-lista" class="btn-outline">Criar nova lista</button>
                 <p class="hint">Você pode manter até 4 listas ativas.</p>
             </div>
         </section>
@@ -73,8 +74,8 @@
         <section id="listas-section" class="container section hidden" aria-labelledby="listas-title">
             <div class="section-top">
                 <button id="btn-voltar-listas" class="link-back">
-                    <img src="assets/Vector.png" alt="" aria-hidden="true" />
-                    Voltar
+                    <img src="assets/arrow-left.png" alt="" aria-hidden="true" class="icon-back" />
+                    <span>Voltar</span>
                 </button>
                 <h2 id="listas-title" class="subtitle">Minhas Listas</h2>
             </div>
@@ -85,8 +86,8 @@
         <section id="itens-section" class="container section hidden" aria-labelledby="titulo-lista">
             <div class="section-top">
                 <button id="btn-voltar-itens" class="link-back">
-                    <img src="assets/Vector.png" alt="" aria-hidden="true" />
-                    Voltar
+                    <img src="assets/arrow-left.png" alt="" aria-hidden="true" class="icon-back" />
+                    <span>Voltar</span>
                 </button>
                 <h2 id="titulo-lista" class="subtitle">Itens</h2>
             </div>
