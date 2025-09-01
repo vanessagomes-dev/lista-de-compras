@@ -9,6 +9,24 @@ const TIPOS_LISTA_NOME = {
   mes: "Lista do Mês",
 };
 
+// ordem fixa de categorias 
+const ALL_CATEGORIES = ["limpeza", "hortifruti", "mercearia", "bebidas", "acougue", "variedades"];
+
+// ====== Normalize listas carregadas ======
+function ensureCategoriaKeys(lista) {
+  if (!lista.categorias || typeof lista.categorias !== "object") {
+    lista.categorias = {};
+  }
+  ALL_CATEGORIES.forEach((cat) => {
+    if (!Object.prototype.hasOwnProperty.call(lista.categorias, cat)) {
+      lista.categorias[cat] = [];
+    }
+  });
+  return lista;
+}
+listas = listas.map((l) => ensureCategoriaKeys(l));
+localStorage.setItem(STORAGE_KEY, JSON.stringify(listas)); 
+
 // Elements
 const btnConfig = document.getElementById("btn-config");
 const dropdown = document.getElementById("config-dropdown");
@@ -45,40 +63,43 @@ const toastClose = document.getElementById("toast-close");
 
 // ====== Helpers ======
 const save = () => localStorage.setItem(STORAGE_KEY, JSON.stringify(listas));
-const show = (el) => el.classList.remove("hidden");
-const hide = (el) => el.classList.add("hidden");
+const show = (el) => el && el.classList.remove("hidden");
+const hide = (el) => el && el.classList.add("hidden");
 
 const showSection = (section) => {
   hide(homeSection);
   hide(listasSection);
   hide(itensSection);
   show(section);
-  document
-    .querySelectorAll(".nav-link")
-    .forEach((l) => l.classList.remove("active"));
+  document.querySelectorAll(".nav-link").forEach((l) => l.classList.remove("active"));
 };
 
-// ====== Toast ======
+// ====== Toast (garante limpar timeout) ======
 let toastTimeout;
-
 const showToast = (msg, timeout = 2500) => {
+  if (!toast || !toastMsg) return;
   toastMsg.textContent = msg;
   toast.classList.add("show");
   toast.classList.remove("hide");
+  toast.hidden = false;
 
   if (toastTimeout) clearTimeout(toastTimeout);
-
   toastTimeout = setTimeout(() => {
     toast.classList.remove("show");
     toast.classList.add("hide");
+    toast.hidden = true;
   }, timeout);
 };
 
-toastClose.addEventListener("click", () => {
-  toast.classList.remove("show");
-  toast.classList.add("hide");
-  if (toastTimeout) clearTimeout(toastTimeout);
-});
+if (toastClose) {
+  toastClose.addEventListener("click", () => {
+    if (!toast) return;
+    toast.classList.remove("show");
+    toast.classList.add("hide");
+    toast.hidden = true;
+    if (toastTimeout) clearTimeout(toastTimeout);
+  });
+}
 
 // ====== Nav ======
 navHome.addEventListener("click", (e) => {
@@ -94,49 +115,45 @@ navListas.addEventListener("click", (e) => {
   navListas.classList.add("active");
 });
 
-// Voltar da tela "Minhas Listas" para Home
 btnVoltarListas?.addEventListener("click", () => {
   showSection(homeSection);
   navHome.classList.add("active");
 });
-
-// Voltar da tela "Itens" para "Minhas Listas"
 btnVoltarItens?.addEventListener("click", () => {
   showSection(listasSection);
   navListas.classList.add("active");
 });
 
 // ====== Dropdown Config ======
-btnConfig.addEventListener("click", (e) => {
-  e.stopPropagation();
-  dropdown.classList.toggle("hidden");
-  const expanded = btnConfig.getAttribute("aria-expanded") === "true";
-  btnConfig.setAttribute("aria-expanded", String(!expanded));
-});
-
+if (btnConfig) {
+  btnConfig.addEventListener("click", (e) => {
+    e.stopPropagation();
+    dropdown.classList.toggle("hidden");
+    const expanded = btnConfig.getAttribute("aria-expanded") === "true";
+    btnConfig.setAttribute("aria-expanded", String(!expanded));
+  });
+}
 document.addEventListener("click", (e) => {
-  if (!dropdown.contains(e.target) && e.target !== btnConfig) {
+  if (dropdown && !dropdown.contains(e.target) && e.target !== btnConfig) {
     dropdown.classList.add("hidden");
-    btnConfig.setAttribute("aria-expanded", "false");
+    btnConfig && btnConfig.setAttribute("aria-expanded", "false");
   }
 });
-
-// Ações do menu (placeholders)
-document.getElementById("config-colors").addEventListener("click", () => {
+document.getElementById("config-colors")?.addEventListener("click", () => {
   showToast("Em breve: trocar cores 🎨");
   dropdown.classList.add("hidden");
 });
-document.getElementById("config-lang").addEventListener("click", () => {
+document.getElementById("config-lang")?.addEventListener("click", () => {
   showToast("Em breve: trocar idioma 🌍");
   dropdown.classList.add("hidden");
 });
-document.getElementById("config-share").addEventListener("click", () => {
+document.getElementById("config-share")?.addEventListener("click", () => {
   showToast("Em breve: compartilhar lista 🔗");
   dropdown.classList.add("hidden");
 });
 
 // ====== Modal Nova Lista ======
-btnNovaLista.addEventListener("click", () => {
+btnNovaLista?.addEventListener("click", () => {
   if (listas.length >= 4) {
     showToast("Limite de 4 listas atingido.");
     return;
@@ -144,21 +161,23 @@ btnNovaLista.addEventListener("click", () => {
   show(modalLista);
 });
 
-closeModal.addEventListener("click", () => hide(modalLista));
-modalLista.addEventListener("click", (e) => {
+closeModal?.addEventListener("click", () => hide(modalLista));
+modalLista?.addEventListener("click", (e) => {
   if (e.target === modalLista) hide(modalLista);
 });
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     hide(modalLista);
-    dropdown.classList.add("hidden");
-    btnConfig.setAttribute("aria-expanded", "false");
+    dropdown && dropdown.classList.add("hidden");
+    btnConfig && btnConfig.setAttribute("aria-expanded", "false");
   }
 });
 
+// criação de listas pelo modal
 document.querySelectorAll(".opcao").forEach((btn) => {
   btn.addEventListener("click", () => {
     const tipo = btn.dataset.tipo;
+    if (!tipo) return;
 
     if (listas.some((l) => l.tipo === tipo)) {
       showToast(`${TIPOS_LISTA_NOME[tipo]} já foi criada!`);
@@ -180,10 +199,11 @@ document.querySelectorAll(".opcao").forEach((btn) => {
         mercearia: [],
         bebidas: [],
         acougue: [],
+        variedades: [],
       },
     };
 
-    listas.push(novaLista);
+    listas.push(ensureCategoriaKeys(novaLista)); 
     save();
     renderListas();
     hide(modalLista);
@@ -231,6 +251,9 @@ function abrirLista(id) {
   listaAtiva = listas.find((l) => l.id === id);
   if (!listaAtiva) return;
 
+  // garante que listaAtiva tem todas as categorias 
+  ensureCategoriaKeys(listaAtiva);
+
   tituloLista.textContent = `${TIPOS_LISTA_NOME[listaAtiva.tipo]} - Itens`;
   renderCategorias();
   show(itensSection);
@@ -252,37 +275,46 @@ function abrirLista(id) {
 // ====== Render Categorias / Itens ======
 function renderCategorias() {
   categoriasContainer.innerHTML = "";
-  Object.keys(listaAtiva.categorias).forEach((cat) => {
+
+  // renderiza todas as categorias na ordem ALL_CATEGORIES
+  ALL_CATEGORIES.forEach((cat) => {
     const ul = document.createElement("ul");
     ul.className = "lista";
     ul.innerHTML = `<h3>${cat}</h3>`;
-    listaAtiva.categorias[cat].forEach((item) => {
-      const li = document.createElement("li");
-      li.className = "item";
-      li.dataset.id = item.id;
-      li.innerHTML = `
-        <div class="item-left">
-          <input type="checkbox" ${
-            item.done ? "checked" : ""
-          } data-cat="${cat}" data-id="${item.id}">
-          <div class="item-title">${escapeHtml(item.text)}</div>
-        </div>
-        <div class="item-controls">
-          <button class="icon-btn" data-action="delete" data-cat="${cat}" data-id="${
-        item.id
-      }">
-            <img src="assets/delete.png" alt="Remover"/>
-          </button>
-        </div>
-      `;
-      ul.appendChild(li);
-    });
+
+    const items = (listaAtiva && listaAtiva.categorias && listaAtiva.categorias[cat]) || [];
+
+    if (!items.length) {
+      const vazio = document.createElement("li");
+      vazio.className = "item vazio";
+      vazio.innerHTML = `<div class="item-left"><div class="item-title vazio-text">Nenhum item ainda</div></div>`;
+      ul.appendChild(vazio);
+    } else {
+      items.forEach((item) => {
+        const li = document.createElement("li");
+        li.className = "item";
+        li.dataset.id = item.id;
+        li.innerHTML = `
+          <div class="item-left">
+            <input type="checkbox" ${item.done ? "checked" : ""} data-cat="${cat}" data-id="${item.id}">
+            <div class="item-title">${escapeHtml(item.text)}</div>
+          </div>
+          <div class="item-controls">
+            <button class="icon-btn" data-action="delete" data-cat="${cat}" data-id="${item.id}">
+              <img src="assets/delete.png" alt="Remover"/>
+            </button>
+          </div>
+        `;
+        ul.appendChild(li);
+      });
+    }
+
     categoriasContainer.appendChild(ul);
   });
 }
 
 // ====== Add Item ======
-form.addEventListener("submit", (e) => {
+form?.addEventListener("submit", (e) => {
   e.preventDefault();
   if (!listaAtiva) {
     showToast("Abra uma lista para adicionar itens.");
@@ -290,8 +322,13 @@ form.addEventListener("submit", (e) => {
   }
 
   const text = inputItem.value.trim();
-  const cat = selectCategoria.value;
-  if (!text) return;
+  const cat = selectCategoria ? selectCategoria.value : null;
+  if (!text || !cat) return;
+
+  // garante que a categoria exista (cria se não existir)
+  if (!listaAtiva.categorias[cat]) {
+    listaAtiva.categorias[cat] = [];
+  }
 
   const listaItens = listaAtiva.categorias[cat];
   if (listaItens.length >= 10) {
@@ -299,8 +336,8 @@ form.addEventListener("submit", (e) => {
     return;
   }
   const totalItens = Object.values(listaAtiva.categorias).flat().length;
-  if (totalItens >= 50) {
-    showToast("Cada lista só pode ter até 50 itens.");
+  if (totalItens >= 60) {
+    showToast("Cada lista só pode ter até 60 itens.");
     return;
   }
 
@@ -311,7 +348,7 @@ form.addEventListener("submit", (e) => {
 });
 
 // Toggle / Delete
-categoriasContainer.addEventListener("click", (e) => {
+categoriasContainer?.addEventListener("click", (e) => {
   if (e.target.matches("input[type=checkbox]")) {
     const cat = e.target.dataset.cat;
     const id = Number(e.target.dataset.id);
@@ -325,9 +362,7 @@ categoriasContainer.addEventListener("click", (e) => {
   if (delBtn) {
     const cat = delBtn.dataset.cat;
     const id = Number(delBtn.dataset.id);
-    listaAtiva.categorias[cat] = listaAtiva.categorias[cat].filter(
-      (i) => i.id !== id
-    );
+    listaAtiva.categorias[cat] = listaAtiva.categorias[cat].filter((i) => i.id !== id);
     save();
     renderCategorias();
   }
@@ -349,12 +384,10 @@ function pesquisar() {
     let itensEncontrados = [];
     Object.values(lista.categorias).forEach((categoria) => {
       categoria.forEach((item) => {
-        if (item.text.toLowerCase().includes(termo))
-          itensEncontrados.push(item);
+        if (item.text.toLowerCase().includes(termo)) itensEncontrados.push(item);
       });
     });
-    if (itensEncontrados.length)
-      encontrados.push({ lista, itens: itensEncontrados });
+    if (itensEncontrados.length) encontrados.push({ lista, itens: itensEncontrados });
   });
 
   if (!encontrados.length) {
@@ -365,10 +398,7 @@ function pesquisar() {
       wrap.className = `lista-card card-${lista.tipo} resultado-card`;
       wrap.dataset.id = lista.id;
 
-      const itensHtml = itens
-        .slice(0, 5)
-        .map((i) => `<span class="tag">${escapeHtml(i.text)}</span>`)
-        .join(" ");
+      const itensHtml = itens.slice(0, 5).map((i) => `<span class="tag">${escapeHtml(i.text)}</span>`).join(" ");
 
       wrap.innerHTML = `
         <span>${TIPOS_LISTA_NOME[lista.tipo]}</span>
@@ -384,34 +414,33 @@ function pesquisar() {
   inputSearch.value = "";
 }
 
-btnSearch.addEventListener("click", pesquisar);
-inputSearch.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    pesquisar();
-  }
+btnSearch?.addEventListener("click", pesquisar);
+inputSearch?.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") { e.preventDefault(); pesquisar(); }
 });
 
-searchResults.addEventListener("click", (e) => {
+searchResults?.addEventListener("click", (e) => {
   const card = e.target.closest(".resultado-card");
   if (card && !e.target.closest(".limpar-resultado")) {
     abrirLista(Number(card.dataset.id));
   }
   if (e.target.closest(".limpar-resultado")) {
     e.target.closest(".resultado-card").remove();
-    if (!searchResults.querySelector(".resultado-card"))
-      searchResults.innerHTML = "";
+    if (!searchResults.querySelector(".resultado-card")) searchResults.innerHTML = "";
   }
+});
+
+// Toast close (fallback caso id diferir)
+document.querySelectorAll(".toast-close").forEach(btn => {
+  btn.addEventListener("click", () => {
+    if (toast) { toast.hidden = true; if (toastTimeout) clearTimeout(toastTimeout); }
+  });
 });
 
 // ====== Utils ======
 function escapeHtml(str) {
-  return String(str).replace(
-    /[&"'<>]/g,
-    (tag) =>
-      ({ "&": "&amp;", '"': "&quot;", "'": "&#39;", "<": "&lt;", ">": "&gt;" }[
-        tag
-      ])
+  return String(str).replace(/[&"'<>]/g, (tag) =>
+    ({ "&": "&amp;", '"': "&quot;", "'": "&#39;", "<": "&lt;", ">": "&gt;" }[tag])
   );
 }
 
