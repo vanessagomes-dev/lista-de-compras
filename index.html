@@ -1,139 +1,147 @@
 <!doctype html>
 <html lang="pt-BR">
+
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Lista de Compras</title>
-  <meta name="description" content="Lista de compras simples, acessível e responsiva" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Lista de Compras</title>
+    <meta name="description" content="Lista de compras simples, acessível e responsiva" />
 
-  <!-- Inter -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <!-- Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap"
+        rel="stylesheet" />
 
-  <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body class="bg-primary">
 
-  <!-- Branding -->
-  <div class="branding">
-    <img src="assets/Frame.png" alt="Quicklist" class="brand-logo" />
-  </div>
-
-  <header class="site-header">
-    <nav class="main-nav container" aria-label="Navegação principal">
-      <ul class="nav-list">
-        <li><a href="#" class="nav-link active" id="nav-home">Home</a></li>
-        <li><a href="#" class="nav-link" id="nav-listas">Minhas Listas</a></li>
-        <li>
-          <button id="btn-config" class="icon-btn" aria-haspopup="menu" aria-expanded="false" aria-label="Configurações">
-            <img src="assets/settings.png" class="icon-img" alt="Configurações" />
-          </button>
-          <!-- Dropdown de Configurações -->
-          <div id="config-dropdown" class="dropdown hidden" role="menu" aria-label="Configurações">
-            <button id="config-colors" class="dropdown-item" role="menuitem">Cores</button>
-            <button id="config-lang" class="dropdown-item" role="menuitem">Idiomas</button>
-            <button id="config-share" class="dropdown-item" role="menuitem">Compartilhar</button>
-          </div>
-        </li>
-      </ul>
-    </nav>
-  </header>
-
-  <main id="main" role="main">
-
-    <!-- HOME -->
-    <section id="home-section" class="container section">
-      <h1 class="title">Lista de Compras</h1>
-
-      <!-- Pesquisa Global -->
-      <div class="search-row" role="search">
-        <input id="search-input" type="search" class="input" placeholder="Pesquisar item em todas as listas..." aria-label="Pesquisar item em todas as listas" />
-        <button id="btn-search" class="btn">Pesquisar</button>
-      </div>
-
-      <div id="search-results" class="results"></div>
-
-      <div class="divider"></div>
-
-      <!-- CTA Nova Lista -->
-      <div class="new-list-cta">
-        <button id="btn-nova-lista" class="btn-outline">Iniciar nova lista</button>
-        <p class="hint">Você pode manter até 4 listas ativas.</p>
-      </div>
-    </section>
-
-    <!-- MINHAS LISTAS -->
-    <section id="listas-section" class="container section hidden" aria-labelledby="listas-title">
-      <div class="section-top">
-        <h2 id="listas-title" class="subtitle">Minhas Listas</h2>
-        <button id="btn-voltar-listas" class="link-back">
-          <img src="assets/Vector.png" alt="" aria-hidden="true" />
-          Voltar
-        </button>
-      </div>
-
-      <div id="listas-container" class="cards"></div>
-    </section>
-
-    <!-- ITENS DA LISTA -->
-    <section id="itens-section" class="container section hidden" aria-labelledby="titulo-lista">
-      <div class="section-top">
-        <h2 id="titulo-lista" class="subtitle">Itens</h2>
-        <button id="btn-voltar-itens" class="link-back">
-          <img src="assets/Vector.png" alt="" aria-hidden="true" />
-          Voltar
-        </button>
-      </div>
-
-      <form id="form-adicionar" class="form" aria-label="Adicionar item">
-        <label for="input-item" class="sr-only">Adicionar item</label>
-        <div class="form-row">
-          <select id="select-categoria" class="select" aria-label="Categoria">
-            <option value="limpeza">Limpeza</option>
-            <option value="hortifruti">Hortifruti</option>
-            <option value="mercearia">Mercearia</option>
-            <option value="bebidas">Bebidas</option>
-            <option value="acougue">Açougue</option>
-          </select>
-
-          <input id="input-item" type="text" class="input" placeholder="Adicione um novo item" autocomplete="off" />
-          <button id="btn-adicionar" class="btn" type="submit">Adicionar item</button>
-        </div>
-      </form>
-
-      <div id="categorias-container" class="categorias"></div>
-    </section>
-
-    <!-- Modal Nova Lista -->
-    <div id="modal-lista" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-      <div class="modal-card">
-        <div class="modal-top">
-          <h3 id="modal-title">Escolha o tipo de lista</h3>
-          <button id="close-modal" class="icon-btn" aria-label="Fechar">
-            <img src="assets/delete-small.png" alt="" />
-          </button>
-        </div>
-
-        <div class="opcoes-grid">
-          <button class="opcao card-dia" data-tipo="dia">Lista do Dia</button>
-          <button class="opcao card-semana" data-tipo="semana">Lista da Semana</button>
-          <button class="opcao card-quinzena" data-tipo="quinzena">Lista da Quinzena</button>
-          <button class="opcao card-mes" data-tipo="mes">Lista do Mês</button>
-        </div>
-      </div>
+    <!-- Branding -->
+    <div class="branding">
+        <img src="assets/Frame.png" alt="Quicklist" class="brand-logo" />
     </div>
 
-    <!-- Toast -->
-    <div id="toast" class="toast" role="status" aria-live="assertive" aria-atomic="true" hidden>
-      <img src="assets/warning-circle-filled.png" alt="" class="icon" />
-      <span id="toast-msg"></span>
-      <button id="toast-close" class="icon-btn toast-close" aria-label="Fechar notificação">
-        <img src="assets/delete-small.png" alt="Fechar" />
-      </button>
-    </div>
-  </main>
+    <header class="site-header">
+        <nav class="main-nav container" aria-label="Navegação principal">
+            <ul class="nav-list">
+                <li><a href="#" class="nav-link active" id="nav-home">Home</a></li>
+                <li><a href="#" class="nav-link" id="nav-listas">Minhas Listas</a></li>
+                <li>
+                    <button id="btn-config" class="icon-btn" aria-haspopup="menu" aria-expanded="false"
+                        aria-label="Configurações">
+                        <img src="assets/settings.png" class="icon-img" alt="Configurações" />
+                    </button>
+                    <!-- Dropdown de Configurações -->
+                    <div id="config-dropdown" class="dropdown hidden" role="menu" aria-label="Configurações">
+                        <button id="config-colors" class="dropdown-item" role="menuitem">Cores</button>
+                        <button id="config-lang" class="dropdown-item" role="menuitem">Idiomas</button>
+                        <button id="config-share" class="dropdown-item" role="menuitem">Compartilhar</button>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
 
-  <script src="main.js" defer></script>
+    <main id="main" role="main">
+
+        <!-- HOME -->
+        <section id="home-section" class="container section">
+            <h1 class="title">Lista de Compras</h1>
+
+            <!-- Pesquisa Global -->
+            <div class="search-row" role="search">
+                <input id="search-input" type="search" class="input" placeholder="Pesquisar item em todas as listas..."
+                    aria-label="Pesquisar item em todas as listas" />
+                <button id="btn-search" class="btn">Pesquisar</button>
+            </div>
+
+            <div id="search-results" class="results"></div>
+
+            <div class="divider"></div>
+
+            <!-- CTA Nova Lista -->
+            <div class="new-list-cta">
+                <button id="btn-nova-lista" class="btn-outline">Iniciar nova lista</button>
+                <p class="hint">Você pode manter até 4 listas ativas.</p>
+            </div>
+        </section>
+
+        <!-- MINHAS LISTAS -->
+        <section id="listas-section" class="container section hidden" aria-labelledby="listas-title">
+            <div class="section-top">
+                <h2 id="listas-title" class="subtitle">Minhas Listas</h2>
+                <button id="btn-voltar-listas" class="link-back">
+                    <img src="assets/Vector.png" alt="" aria-hidden="true" />
+                    Voltar
+                </button>
+            </div>
+
+            <div id="listas-container" class="cards"></div>
+        </section>
+
+        <!-- ITENS DA LISTA -->
+        <section id="itens-section" class="container section hidden" aria-labelledby="titulo-lista">
+            <div class="section-top">
+                <h2 id="titulo-lista" class="subtitle">Itens</h2>
+                <button id="btn-voltar-itens" class="link-back">
+                    <img src="assets/Vector.png" alt="" aria-hidden="true" />
+                    Voltar
+                </button>
+            </div>
+
+            <form id="form-adicionar" class="form" aria-label="Adicionar item">
+                <label for="input-item" class="sr-only">Adicionar item</label>
+                <div class="form-row">
+                    <select id="select-categoria" class="select" aria-label="Categoria">
+                        <option value="limpeza">Limpeza</option>
+                        <option value="hortifruti">Hortifruti</option>
+                        <option value="mercearia">Mercearia</option>
+                        <option value="bebidas">Bebidas</option>
+                        <option value="acougue">Açougue</option>
+                    </select>
+
+                    <input id="input-item" type="text" class="input" placeholder="Adicione um novo item"
+                        autocomplete="off" />
+                    <button id="btn-adicionar" class="btn" type="submit">Adicionar item</button>
+                </div>
+            </form>
+
+            <div id="categorias-container" class="categorias"></div>
+        </section>
+
+        <!-- Modal Nova Lista -->
+        <div id="modal-lista" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+            <div class="modal-card">
+                <div class="modal-top">
+                    <h3 id="modal-title">Escolha o tipo de lista</h3>
+                    <button id="close-modal" class="icon-btn" aria-label="Fechar">
+                        <img src="assets/delete-small.png" alt="" />
+                    </button>
+                </div>
+
+                <div class="opcoes-grid">
+                    <button class="opcao card-dia" data-tipo="dia">Lista do Dia</button>
+                    <button class="opcao card-semana" data-tipo="semana">Lista da Semana</button>
+                    <button class="opcao card-quinzena" data-tipo="quinzena">Lista da Quinzena</button>
+                    <button class="opcao card-mes" data-tipo="mes">Lista do Mês</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast -->
+        <div id="toast" class="toast" role="status" aria-live="assertive" aria-atomic="true" hidden>
+            <img src="assets/warning-circle-filled.png" alt="" class="icon" />
+            <span id="toast-msg"></span>
+            <button id="toast-close" class="icon-btn toast-close" aria-label="Fechar notificação">
+                <img src="assets/delete-small.png" alt="Fechar" />
+            </button>
+        </div>
+    </main>
+
+    <script src="main.js" defer></script>
 </body>
+
 </html>

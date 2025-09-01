@@ -49,16 +49,36 @@ const show = (el) => el.classList.remove("hidden");
 const hide = (el) => el.classList.add("hidden");
 
 const showSection = (section) => {
-  hide(homeSection); hide(listasSection); hide(itensSection);
+  hide(homeSection);
+  hide(listasSection);
+  hide(itensSection);
   show(section);
-  document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
+  document
+    .querySelectorAll(".nav-link")
+    .forEach((l) => l.classList.remove("active"));
 };
+
+// ====== Toast ======
+let toastTimeout;
 
 const showToast = (msg, timeout = 2500) => {
   toastMsg.textContent = msg;
-  toast.hidden = false;
-  setTimeout(() => (toast.hidden = true), timeout);
+  toast.classList.add("show");
+  toast.classList.remove("hide");
+
+  if (toastTimeout) clearTimeout(toastTimeout);
+
+  toastTimeout = setTimeout(() => {
+    toast.classList.remove("show");
+    toast.classList.add("hide");
+  }, timeout);
 };
+
+toastClose.addEventListener("click", () => {
+  toast.classList.remove("show");
+  toast.classList.add("hide");
+  if (toastTimeout) clearTimeout(toastTimeout);
+});
 
 // ====== Nav ======
 navHome.addEventListener("click", (e) => {
@@ -151,7 +171,13 @@ document.querySelectorAll(".opcao").forEach((btn) => {
     const novaLista = {
       id: Date.now(),
       tipo,
-      categorias: { limpeza: [], hortifruti: [], mercearia: [], bebidas: [], acougue: [] }
+      categorias: {
+        limpeza: [],
+        hortifruti: [],
+        mercearia: [],
+        bebidas: [],
+        acougue: [],
+      },
     };
 
     listas.push(novaLista);
@@ -185,7 +211,8 @@ function renderListas() {
     del.addEventListener("click", (e) => {
       e.stopPropagation();
       listas = listas.filter((l) => l.id !== lista.id);
-      save(); renderListas();
+      save();
+      renderListas();
       showToast(`${TIPOS_LISTA_NOME[lista.tipo]} excluída!`);
     });
 
@@ -208,7 +235,9 @@ function abrirLista(id) {
   hide(homeSection);
 
   if (abrirLista.destacarId) {
-    const el = categoriasContainer.querySelector(`[data-id="${abrirLista.destacarId}"]`);
+    const el = categoriasContainer.querySelector(
+      `[data-id="${abrirLista.destacarId}"]`
+    );
     if (el) {
       el.classList.add("destacado");
       setTimeout(() => el.classList.remove("destacado"), 3000);
@@ -230,11 +259,15 @@ function renderCategorias() {
       li.dataset.id = item.id;
       li.innerHTML = `
         <div class="item-left">
-          <input type="checkbox" ${item.done ? "checked" : ""} data-cat="${cat}" data-id="${item.id}">
+          <input type="checkbox" ${
+            item.done ? "checked" : ""
+          } data-cat="${cat}" data-id="${item.id}">
           <div class="item-title">${escapeHtml(item.text)}</div>
         </div>
         <div class="item-controls">
-          <button class="icon-btn" data-action="delete" data-cat="${cat}" data-id="${item.id}">
+          <button class="icon-btn" data-action="delete" data-cat="${cat}" data-id="${
+        item.id
+      }">
             <img src="assets/delete.png" alt="Remover"/>
           </button>
         </div>
@@ -248,19 +281,29 @@ function renderCategorias() {
 // ====== Add Item ======
 form.addEventListener("submit", (e) => {
   e.preventDefault();
-  if (!listaAtiva) { showToast("Abra uma lista para adicionar itens."); return; }
+  if (!listaAtiva) {
+    showToast("Abra uma lista para adicionar itens.");
+    return;
+  }
 
   const text = inputItem.value.trim();
   const cat = selectCategoria.value;
   if (!text) return;
 
   const listaItens = listaAtiva.categorias[cat];
-  if (listaItens.length >= 10) { showToast("Cada categoria só pode ter até 10 itens."); return; }
+  if (listaItens.length >= 10) {
+    showToast("Cada categoria só pode ter até 10 itens.");
+    return;
+  }
   const totalItens = Object.values(listaAtiva.categorias).flat().length;
-  if (totalItens >= 50) { showToast("Cada lista só pode ter até 50 itens."); return; }
+  if (totalItens >= 50) {
+    showToast("Cada lista só pode ter até 50 itens.");
+    return;
+  }
 
   listaItens.push({ id: Date.now(), text, done: false });
-  save(); renderCategorias();
+  save();
+  renderCategorias();
   inputItem.value = "";
 });
 
@@ -270,14 +313,20 @@ categoriasContainer.addEventListener("click", (e) => {
     const cat = e.target.dataset.cat;
     const id = Number(e.target.dataset.id);
     const item = listaAtiva.categorias[cat].find((i) => i.id === id);
-    if (item) { item.done = e.target.checked; save(); }
+    if (item) {
+      item.done = e.target.checked;
+      save();
+    }
   }
   const delBtn = e.target.closest("[data-action=delete]");
   if (delBtn) {
     const cat = delBtn.dataset.cat;
     const id = Number(delBtn.dataset.id);
-    listaAtiva.categorias[cat] = listaAtiva.categorias[cat].filter((i) => i.id !== id);
-    save(); renderCategorias();
+    listaAtiva.categorias[cat] = listaAtiva.categorias[cat].filter(
+      (i) => i.id !== id
+    );
+    save();
+    renderCategorias();
   }
 });
 
@@ -286,7 +335,10 @@ function pesquisar() {
   const termo = inputSearch.value.trim().toLowerCase();
   searchResults.innerHTML = "";
 
-  if (!termo) { searchResults.innerHTML = "<p>Digite um termo para pesquisar.</p>"; return; }
+  if (!termo) {
+    searchResults.innerHTML = "<p>Digite um termo para pesquisar.</p>";
+    return;
+  }
 
   let encontrados = [];
 
@@ -294,10 +346,12 @@ function pesquisar() {
     let itensEncontrados = [];
     Object.values(lista.categorias).forEach((categoria) => {
       categoria.forEach((item) => {
-        if (item.text.toLowerCase().includes(termo)) itensEncontrados.push(item);
+        if (item.text.toLowerCase().includes(termo))
+          itensEncontrados.push(item);
       });
     });
-    if (itensEncontrados.length) encontrados.push({ lista, itens: itensEncontrados });
+    if (itensEncontrados.length)
+      encontrados.push({ lista, itens: itensEncontrados });
   });
 
   if (!encontrados.length) {
@@ -329,7 +383,10 @@ function pesquisar() {
 
 btnSearch.addEventListener("click", pesquisar);
 inputSearch.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") { e.preventDefault(); pesquisar(); }
+  if (e.key === "Enter") {
+    e.preventDefault();
+    pesquisar();
+  }
 });
 
 searchResults.addEventListener("click", (e) => {
@@ -339,17 +396,19 @@ searchResults.addEventListener("click", (e) => {
   }
   if (e.target.closest(".limpar-resultado")) {
     e.target.closest(".resultado-card").remove();
-    if (!searchResults.querySelector(".resultado-card")) searchResults.innerHTML = "";
+    if (!searchResults.querySelector(".resultado-card"))
+      searchResults.innerHTML = "";
   }
 });
 
-// Toast close
-toastClose.addEventListener("click", () => (toast.hidden = true));
-
 // ====== Utils ======
 function escapeHtml(str) {
-  return String(str).replace(/[&"'<>]/g, (tag) =>
-    ({ "&":"&amp;", '"':"&quot;", "'":"&#39;", "<":"&lt;", ">":"&gt;" }[tag])
+  return String(str).replace(
+    /[&"'<>]/g,
+    (tag) =>
+      ({ "&": "&amp;", '"': "&quot;", "'": "&#39;", "<": "&lt;", ">": "&gt;" }[
+        tag
+      ])
   );
 }
 
