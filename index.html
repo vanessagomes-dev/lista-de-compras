@@ -27,16 +27,46 @@
 
         <nav class="main-nav container" aria-label="Navegação principal">
             <ul class="nav-list">
-                <li><a href="#" class="nav-link active" id="nav-home">Home</a></li>
-                <li><a href="#" class="nav-link" id="nav-listas">Minhas Listas</a></li>
                 <li>
+                    <a href="#" class="nav-link active" id="nav-home">Home</a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" id="nav-listas">Minhas Listas</a>
+                </li>
+                <li class="nav-config">
                     <button id="btn-config" class="icon-btn" aria-haspopup="menu" aria-expanded="false"
                         aria-label="Configurações">
                         <img src="assets/settings.png" class="icon-img" alt="Configurações" />
                     </button>
+
                     <!-- Dropdown de Configurações -->
                     <div id="config-dropdown" class="dropdown hidden" role="menu" aria-label="Configurações">
-                        <button id="config-colors" class="dropdown-item" role="menuitem">Cores</button>
+                        <div class="dropdown-group">
+                            <p class="dropdown-label">Cores</p>
+                            <div class="color-palette">
+                                <button class="color-option" data-color="azul" style="background:#3b82f6"></button>
+                                <button class="color-option" data-color="rosa" style="background:#ec4899"></button>
+                                <button class="color-option" data-color="verde" style="background:#22c55e"></button>
+                                <button class="color-option" data-color="laranja" style="background:#f97316"></button>
+                                <button class="color-option" data-color="roxo" style="background:#8b5cf6"></button>
+                            </div>
+                        </div>
+
+                        <div class="dropdown-group">
+                            <p class="dropdown-label">Papel de Parede</p>
+                            <div class="bg-options">
+                                <button class="bg-option" data-bg="bg1.jpg">
+                                    <img src="assets/bg1.jpg" alt="Fundo 1">
+                                </button>
+                                <button class="bg-option" data-bg="bg2.jpg">
+                                    <img src="assets/bg2.jpg" alt="Fundo 2">
+                                </button>
+                                <button class="bg-option" data-bg="bg3.jpg">
+                                    <img src="assets/bg3.jpg" alt="Fundo 3">
+                                </button>
+                            </div>
+                        </div>
+
                         <button id="config-lang" class="dropdown-item" role="menuitem">Idiomas</button>
                         <button id="config-share" class="dropdown-item" role="menuitem">Compartilhar</button>
                     </div>
@@ -44,7 +74,6 @@
             </ul>
         </nav>
     </header>
-
 
     <main id="main" role="main">
 

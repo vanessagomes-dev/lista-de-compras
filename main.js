@@ -9,8 +9,15 @@ const TIPOS_LISTA_NOME = {
   mes: "Lista do Mês",
 };
 
-// ordem fixa de categorias 
-const ALL_CATEGORIES = ["limpeza", "hortifruti", "mercearia", "bebidas", "acougue", "variedades"];
+// ordem fixa de categorias
+const ALL_CATEGORIES = [
+  "limpeza",
+  "hortifruti",
+  "mercearia",
+  "bebidas",
+  "acougue",
+  "variedades",
+];
 
 // ====== Normalize listas carregadas ======
 function ensureCategoriaKeys(lista) {
@@ -25,7 +32,7 @@ function ensureCategoriaKeys(lista) {
   return lista;
 }
 listas = listas.map((l) => ensureCategoriaKeys(l));
-localStorage.setItem(STORAGE_KEY, JSON.stringify(listas)); 
+localStorage.setItem(STORAGE_KEY, JSON.stringify(listas));
 
 // Elements
 const btnConfig = document.getElementById("btn-config");
@@ -71,7 +78,9 @@ const showSection = (section) => {
   hide(listasSection);
   hide(itensSection);
   show(section);
-  document.querySelectorAll(".nav-link").forEach((l) => l.classList.remove("active"));
+  document
+    .querySelectorAll(".nav-link")
+    .forEach((l) => l.classList.remove("active"));
 };
 
 // ====== Toast (garante limpar timeout) ======
@@ -152,6 +161,53 @@ document.getElementById("config-share")?.addEventListener("click", () => {
   dropdown.classList.add("hidden");
 });
 
+// Definir cor da lista
+document.querySelectorAll(".color-option").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    if (!listaAtiva) {
+      showToast("Abra uma lista para configurar.");
+      return;
+    }
+    listaAtiva.color = btn.dataset.color;
+    save();
+    renderListas();
+    showToast(`Cor da lista alterada para ${btn.dataset.color}`);
+  });
+});
+
+// Definir papel de parede
+document.querySelectorAll(".bg-option").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    if (!listaAtiva) {
+      showToast("Abra uma lista para configurar.");
+      return;
+    }
+    listaAtiva.bg = btn.dataset.bg;
+    save();
+    aplicarEstiloLista();
+    showToast("Papel de parede aplicado!");
+  });
+});
+
+// Aplicar estilo quando abrir lista
+function aplicarEstiloLista() {
+  if (!listaAtiva) return;
+
+  // Cor no título / card
+  if (listaAtiva.color) {
+    tituloLista.style.color = listaAtiva.color;
+  }
+
+  // Fundo no container
+  if (listaAtiva.bg) {
+    itensSection.style.backgroundImage = `url("assets/${listaAtiva.bg}")`;
+    itensSection.style.backgroundSize = "cover";
+    itensSection.style.backgroundPosition = "center";
+  } else {
+    itensSection.style.backgroundImage = "none";
+  }
+}
+
 // ====== Modal Nova Lista ======
 btnNovaLista?.addEventListener("click", () => {
   if (listas.length >= 4) {
@@ -203,7 +259,7 @@ document.querySelectorAll(".opcao").forEach((btn) => {
       },
     };
 
-    listas.push(ensureCategoriaKeys(novaLista)); 
+    listas.push(ensureCategoriaKeys(novaLista));
     save();
     renderListas();
     hide(modalLista);
@@ -248,10 +304,11 @@ function renderListas() {
 
 // ====== Abrir Lista ======
 function abrirLista(id) {
+  aplicarEstiloLista();
   listaAtiva = listas.find((l) => l.id === id);
   if (!listaAtiva) return;
 
-  // garante que listaAtiva tem todas as categorias 
+  // garante que listaAtiva tem todas as categorias
   ensureCategoriaKeys(listaAtiva);
 
   tituloLista.textContent = `${TIPOS_LISTA_NOME[listaAtiva.tipo]} - Itens`;
@@ -282,7 +339,8 @@ function renderCategorias() {
     ul.className = "lista";
     ul.innerHTML = `<h3>${cat}</h3>`;
 
-    const items = (listaAtiva && listaAtiva.categorias && listaAtiva.categorias[cat]) || [];
+    const items =
+      (listaAtiva && listaAtiva.categorias && listaAtiva.categorias[cat]) || [];
 
     if (!items.length) {
       const vazio = document.createElement("li");
@@ -296,11 +354,15 @@ function renderCategorias() {
         li.dataset.id = item.id;
         li.innerHTML = `
           <div class="item-left">
-            <input type="checkbox" ${item.done ? "checked" : ""} data-cat="${cat}" data-id="${item.id}">
+            <input type="checkbox" ${
+              item.done ? "checked" : ""
+            } data-cat="${cat}" data-id="${item.id}">
             <div class="item-title">${escapeHtml(item.text)}</div>
           </div>
           <div class="item-controls">
-            <button class="icon-btn" data-action="delete" data-cat="${cat}" data-id="${item.id}">
+            <button class="icon-btn" data-action="delete" data-cat="${cat}" data-id="${
+          item.id
+        }">
               <img src="assets/delete.png" alt="Remover"/>
             </button>
           </div>
@@ -362,7 +424,9 @@ categoriasContainer?.addEventListener("click", (e) => {
   if (delBtn) {
     const cat = delBtn.dataset.cat;
     const id = Number(delBtn.dataset.id);
-    listaAtiva.categorias[cat] = listaAtiva.categorias[cat].filter((i) => i.id !== id);
+    listaAtiva.categorias[cat] = listaAtiva.categorias[cat].filter(
+      (i) => i.id !== id
+    );
     save();
     renderCategorias();
   }
@@ -384,10 +448,12 @@ function pesquisar() {
     let itensEncontrados = [];
     Object.values(lista.categorias).forEach((categoria) => {
       categoria.forEach((item) => {
-        if (item.text.toLowerCase().includes(termo)) itensEncontrados.push(item);
+        if (item.text.toLowerCase().includes(termo))
+          itensEncontrados.push(item);
       });
     });
-    if (itensEncontrados.length) encontrados.push({ lista, itens: itensEncontrados });
+    if (itensEncontrados.length)
+      encontrados.push({ lista, itens: itensEncontrados });
   });
 
   if (!encontrados.length) {
@@ -398,7 +464,10 @@ function pesquisar() {
       wrap.className = `lista-card card-${lista.tipo} resultado-card`;
       wrap.dataset.id = lista.id;
 
-      const itensHtml = itens.slice(0, 5).map((i) => `<span class="tag">${escapeHtml(i.text)}</span>`).join(" ");
+      const itensHtml = itens
+        .slice(0, 5)
+        .map((i) => `<span class="tag">${escapeHtml(i.text)}</span>`)
+        .join(" ");
 
       wrap.innerHTML = `
         <span>${TIPOS_LISTA_NOME[lista.tipo]}</span>
@@ -416,7 +485,10 @@ function pesquisar() {
 
 btnSearch?.addEventListener("click", pesquisar);
 inputSearch?.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") { e.preventDefault(); pesquisar(); }
+  if (e.key === "Enter") {
+    e.preventDefault();
+    pesquisar();
+  }
 });
 
 searchResults?.addEventListener("click", (e) => {
@@ -426,21 +498,29 @@ searchResults?.addEventListener("click", (e) => {
   }
   if (e.target.closest(".limpar-resultado")) {
     e.target.closest(".resultado-card").remove();
-    if (!searchResults.querySelector(".resultado-card")) searchResults.innerHTML = "";
+    if (!searchResults.querySelector(".resultado-card"))
+      searchResults.innerHTML = "";
   }
 });
 
 // Toast close (fallback caso id diferir)
-document.querySelectorAll(".toast-close").forEach(btn => {
+document.querySelectorAll(".toast-close").forEach((btn) => {
   btn.addEventListener("click", () => {
-    if (toast) { toast.hidden = true; if (toastTimeout) clearTimeout(toastTimeout); }
+    if (toast) {
+      toast.hidden = true;
+      if (toastTimeout) clearTimeout(toastTimeout);
+    }
   });
 });
 
 // ====== Utils ======
 function escapeHtml(str) {
-  return String(str).replace(/[&"'<>]/g, (tag) =>
-    ({ "&": "&amp;", '"': "&quot;", "'": "&#39;", "<": "&lt;", ">": "&gt;" }[tag])
+  return String(str).replace(
+    /[&"'<>]/g,
+    (tag) =>
+      ({ "&": "&amp;", '"': "&quot;", "'": "&#39;", "<": "&lt;", ">": "&gt;" }[
+        tag
+      ])
   );
 }
 
