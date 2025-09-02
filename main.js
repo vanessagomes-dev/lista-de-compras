@@ -150,7 +150,7 @@ function applyTranslationsToUI() {
   const select = document.getElementById("select-categoria");
   if (select) {
     Array.from(select.options).forEach((opt) => {
-      const key = opt.value; 
+      const key = opt.value;
       const label = translations.categories?.[key];
       if (label) opt.textContent = label;
     });
@@ -376,27 +376,51 @@ function renderListas() {
   listas.forEach((lista) => {
     const card = document.createElement("div");
     card.className = `lista-card card-${lista.tipo}`;
+    card.style.display = "flex";
+    card.style.justifyContent = "space-between";
+    card.style.alignItems = "center";
+    card.style.cursor = "pointer"; // deixa claro que é clicável
+
+    // badge/color indicator
+    const badge = document.createElement("span");
+    badge.className = "list-badge";
+    badge.setAttribute("aria-hidden", "true");
+    if (lista.color) {
+      badge.style.background = lista.color;
+      card.style.borderColor = lista.color;
+
+      // Hover dinâmico baseado na cor da lista
+      card.addEventListener("mouseenter", () => {
+        card.style.boxShadow = `0 4px 12px ${lista.color}40`;
+      });
+      card.addEventListener("mouseleave", () => {
+        card.style.boxShadow = "";
+      });
+    }
 
     const nome = document.createElement("span");
+    nome.className = "lista-nome";
     nome.textContent = TIPOS_LISTA_NOME[lista.tipo] || `Lista (${lista.tipo})`;
 
     // botões de ação
     const actions = document.createElement("div");
     actions.className = "lista-actions";
+    actions.style.display = "flex";
+    actions.style.gap = "10px";
 
     const btnShare = document.createElement("button");
     btnShare.className = "icon-btn";
-    btnShare.innerHTML = `<img src="assets/share.png" alt="Compartilhar lista">`;
+    btnShare.innerHTML = `<img src="assets/share.png" alt="Compartilhar lista" style="width:18px;height:18px;">`;
     btnShare.addEventListener("click", (e) => {
-      e.stopPropagation();
+      e.stopPropagation(); // evita abrir a lista
       showToast(`Compartilhar: ${TIPOS_LISTA_NOME[lista.tipo]} (em breve)`);
     });
 
     const btnDelete = document.createElement("button");
     btnDelete.className = "icon-btn";
-    btnDelete.innerHTML = `<img src="assets/delete.png" alt="Excluir lista">`;
+    btnDelete.innerHTML = `<img src="assets/delete.png" alt="Excluir lista" style="width:18px;height:18px;">`;
     btnDelete.addEventListener("click", (e) => {
-      e.stopPropagation();
+      e.stopPropagation(); // evita abrir a lista
       listas = listas.filter((l) => l.id !== lista.id);
       save();
       renderListas();
@@ -406,35 +430,46 @@ function renderListas() {
     actions.appendChild(btnShare);
     actions.appendChild(btnDelete);
 
-    card.appendChild(nome);
+    const leftWrap = document.createElement("div");
+    leftWrap.style.display = "flex";
+    leftWrap.style.alignItems = "center";
+    leftWrap.style.gap = "8px";
+    leftWrap.appendChild(badge);
+    leftWrap.appendChild(nome);
+
+    card.appendChild(leftWrap);
     card.appendChild(actions);
 
-    card.addEventListener("click", () => abrirLista(lista.id));
+    // clique no card abre a lista
+    card.addEventListener("click", () => {
+      abrirLista(lista.id);
+    });
+
     listasContainer.appendChild(card);
   });
 }
-    
 // ===== Abrir Lista =====
-function abrirLista(id) {
-  listaAtiva = listas.find((l) => l.id === id);
-  if (!listaAtiva) return;
-  ensureCategoriaKeys(listaAtiva);
-  tituloLista.textContent = `${TIPOS_LISTA_NOME[listaAtiva.tipo]} - Itens`;
-  renderCategorias();
-  aplicarEstiloLista();
-  show(itensSection);
-  hide(listasSection);
-  hide(homeSection);
-  if (abrirLista.destacarId) {
-    const el = categoriasContainer.querySelector(
-      `[data-id="${abrirLista.destacarId}"]`
-    );
-    if (el) {
-      el.classList.add("destacado");
-      setTimeout(() => el.classList.remove("destacado"), 3000);
-    }
-    abrirLista.destacarId = null;
+function abrirLista(listaId) {
+  const lista = listas.find((l) => l.id === listaId);
+  if (!lista) {
+    showToast("Lista não encontrada.");
+    return;
   }
+
+  listaAtiva = lista;
+
+  // Atualiza título da lista
+  tituloLista.textContent =
+    TIPOS_LISTA_NOME[lista.tipo] || `Lista (${lista.tipo})`;
+
+  // Renderiza os itens da lista
+  renderCategorias();
+
+  // Aplica estilo (cor, fundo etc.)
+  aplicarEstiloLista();
+
+  // Troca para a tela de itens
+  showSection(itensSection);
 }
 
 // ===== Render Categorias / Itens =====

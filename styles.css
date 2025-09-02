@@ -342,15 +342,24 @@ body {
     box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset;
 }
 
+/* Estilo para os cards das listas */
 .lista-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    cursor: pointer;
-    transition: border-color .2s ease, box-shadow .2s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  background: #fff;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Efeito de hover - cor virá inline do JS */
+.lista-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 /* Ícones dos botões de ação (excluir, compartilhar ) */
