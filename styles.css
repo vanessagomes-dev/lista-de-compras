@@ -343,7 +343,22 @@ body {
 }
 
 .lista-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
     transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+/* Ícones dos botões de ação (excluir, compartilhar ) */
+.lista-actions .icon-btn img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  display: block;
 }
 
 .lista-nome {
@@ -356,25 +371,26 @@ body {
     color: var(--content-secondary);
     font-size: 14px
 }
+
 /* Papel de parede na tela de itens */
 #itens-section {
-  border: none !important;                
-  box-shadow: none !important;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+    border: none !important;
+    box-shadow: none !important;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 #itens-section.bg-wallpaper {
-  border: none !important;
-  box-shadow: none !important;
+    border: none !important;
+    box-shadow: none !important;
 }
 
 #itens-section.bg-wallpaper .lista {
-  border: none !important;                 
-  background: rgba(255,255,255,.96);      
-  -webkit-backdrop-filter: blur(0px);
-  backdrop-filter: blur(0px);
+    border: none !important;
+    background: rgba(255, 255, 255, .96);
+    -webkit-backdrop-filter: blur(0px);
+    backdrop-filter: blur(0px);
 }
 
 .item {

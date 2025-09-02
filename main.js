@@ -299,13 +299,9 @@ document.querySelectorAll(".bg-option").forEach((btn) => {
   });
 });
 
-// ===== Menu placeholders (idioma / compartilhar) =====
+// ===== Menu placeholders  =====
 document.getElementById("config-lang")?.addEventListener("click", () => {
   showToast("Em breve: trocar idioma 🌍");
-  dropdown.classList.add("hidden");
-});
-document.getElementById("config-share")?.addEventListener("click", () => {
-  showToast("Em breve: compartilhar lista 🔗");
   dropdown.classList.add("hidden");
 });
 
@@ -369,7 +365,7 @@ document.querySelectorAll(".opcao").forEach((btn) => {
   });
 });
 
-// ===== Render Listas (aplica cor no cartão e badge) =====
+// ===== Render Listas =====
 function renderListas() {
   listasContainer.innerHTML = "";
   if (!listas.length) {
@@ -381,23 +377,25 @@ function renderListas() {
     const card = document.createElement("div");
     card.className = `lista-card card-${lista.tipo}`;
 
-    // badge/color indicator
-    const badge = document.createElement("span");
-    badge.className = "list-badge";
-    badge.setAttribute("aria-hidden", "true");
-    if (lista.color) {
-      badge.style.background = lista.color;
-      card.style.borderColor = lista.color;
-    }
-
     const nome = document.createElement("span");
-    nome.className = "lista-nome";
     nome.textContent = TIPOS_LISTA_NOME[lista.tipo] || `Lista (${lista.tipo})`;
 
-    const del = document.createElement("button");
-    del.className = "icon-btn";
-    del.innerHTML = `<img src="assets/delete.png" alt="Excluir lista">`;
-    del.addEventListener("click", (e) => {
+    // botões de ação
+    const actions = document.createElement("div");
+    actions.className = "lista-actions";
+
+    const btnShare = document.createElement("button");
+    btnShare.className = "icon-btn";
+    btnShare.innerHTML = `<img src="assets/share.png" alt="Compartilhar lista">`;
+    btnShare.addEventListener("click", (e) => {
+      e.stopPropagation();
+      showToast(`Compartilhar: ${TIPOS_LISTA_NOME[lista.tipo]} (em breve)`);
+    });
+
+    const btnDelete = document.createElement("button");
+    btnDelete.className = "icon-btn";
+    btnDelete.innerHTML = `<img src="assets/delete.png" alt="Excluir lista">`;
+    btnDelete.addEventListener("click", (e) => {
       e.stopPropagation();
       listas = listas.filter((l) => l.id !== lista.id);
       save();
@@ -405,21 +403,17 @@ function renderListas() {
       showToast(`${TIPOS_LISTA_NOME[lista.tipo]} excluída!`);
     });
 
-    const leftWrap = document.createElement("div");
-    leftWrap.style.display = "flex";
-    leftWrap.style.alignItems = "center";
-    leftWrap.style.gap = "8px";
-    leftWrap.appendChild(badge);
-    leftWrap.appendChild(nome);
+    actions.appendChild(btnShare);
+    actions.appendChild(btnDelete);
 
-    card.appendChild(leftWrap);
-    card.appendChild(del);
+    card.appendChild(nome);
+    card.appendChild(actions);
 
     card.addEventListener("click", () => abrirLista(lista.id));
     listasContainer.appendChild(card);
   });
 }
-
+    
 // ===== Abrir Lista =====
 function abrirLista(id) {
   listaAtiva = listas.find((l) => l.id === id);
