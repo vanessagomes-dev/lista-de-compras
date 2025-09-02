@@ -1,179 +1,279 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
-
-<head>
+  <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Lista de Compras</title>
-    <meta name="description" content="Lista de compras simples, acessível e responsiva" />
+    <meta
+      name="description"
+      content="Lista de compras simples, acessível e responsiva"
+    />
 
     <!-- Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap"
-        rel="stylesheet" />
+      href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap"
+      rel="stylesheet"
+    />
 
     <link rel="stylesheet" href="styles.css" />
-</head>
+  </head>
 
-<body class="bg-primary">
-
+  <body class="bg-primary">
     <!-- Header -->
     <header class="site-header">
-        <div class="logo-container">
-            <img src="assets/logo.png" alt="Shopping List" class="logo">
-        </div>
+      <div class="logo-container">
+        <img src="assets/logo.png" alt="Shopping List" class="logo" />
+      </div>
 
-        <nav class="main-nav container" aria-label="Navegação principal">
-            <ul class="nav-list">
-                <li>
-                    <a href="#" class="nav-link active" id="nav-home">Home</a>
-                </li>
-                <li>
-                    <a href="#" class="nav-link" id="nav-listas">Minhas Listas</a>
-                </li>
-                <li class="nav-config">
-                    <button id="btn-config" class="icon-btn" aria-haspopup="menu" aria-expanded="false"
-                        aria-label="Configurações">
-                        <img src="assets/settings.png" class="icon-img" alt="Configurações" />
-                    </button>
+      <nav class="main-nav container" aria-label="Navegação principal">
+        <ul class="nav-list">
+          <li>
+            <a href="#" class="nav-link active" id="nav-home">Home</a>
+          </li>
+          <li>
+            <a href="#" class="nav-link" id="nav-listas">Minhas Listas</a>
+          </li>
+          <li class="nav-config">
+            <button
+              id="btn-config"
+              class="icon-btn"
+              aria-haspopup="menu"
+              aria-expanded="false"
+              aria-label="Configurações"
+            >
+              <img
+                src="assets/settings.png"
+                class="icon-img"
+                alt="Configurações"
+              />
+            </button>
 
-                    <!-- Dropdown de Configurações -->
-                    <div id="config-dropdown" class="dropdown hidden" role="menu" aria-label="Configurações">
-                        <div class="dropdown-group">
-                            <p class="dropdown-label">Cores</p>
-                            <div class="color-palette">
-                                <button class="color-option" data-color="azul" style="background:#3b82f6"></button>
-                                <button class="color-option" data-color="rosa" style="background:#ec4899"></button>
-                                <button class="color-option" data-color="verde" style="background:#22c55e"></button>
-                                <button class="color-option" data-color="laranja" style="background:#f97316"></button>
-                                <button class="color-option" data-color="roxo" style="background:#8b5cf6"></button>
-                            </div>
-                        </div>
+            <!-- Dropdown de Configurações -->
+            <div
+              id="config-dropdown"
+              class="dropdown hidden"
+              role="menu"
+              aria-label="Configurações"
+            >
+              <div class="dropdown-group">
+                <p class="dropdown-label">Cores</p>
+                <div class="color-palette">
+                  <button
+                    class="color-option"
+                    data-color="azul"
+                    style="background: #3b82f6"
+                  ></button>
+                  <button
+                    class="color-option"
+                    data-color="rosa"
+                    style="background: #ec4899"
+                  ></button>
+                  <button
+                    class="color-option"
+                    data-color="verde"
+                    style="background: #22c55e"
+                  ></button>
+                  <button
+                    class="color-option"
+                    data-color="laranja"
+                    style="background: #f97316"
+                  ></button>
+                  <button
+                    class="color-option"
+                    data-color="roxo"
+                    style="background: #8b5cf6"
+                  ></button>
+                </div>
+              </div>
 
-                        <div class="dropdown-group">
-                            <p class="dropdown-label">Papel de Parede</p>
-                            <div class="bg-options">
-                                <button class="bg-option" data-bg="none">
-                                    <span class="no-bg">Nenhum</span>
-                                </button>
-                                <button class="bg-option" data-bg="bg1.jpg">
-                                    <img src="assets/bg1.jpg" alt="Fundo 1">
-                                </button>
-                                <button class="bg-option" data-bg="bg2.jpg">
-                                    <img src="assets/bg2.jpg" alt="Fundo 2">
-                                </button>
-                                <button class="bg-option" data-bg="bg3.jpg">
-                                    <img src="assets/bg3.jpg" alt="Fundo 3">
-                                </button>
-                            </div>
-                        </div>
+              <div class="dropdown-group">
+                <p class="dropdown-label">Papel de Parede</p>
+                <div class="bg-options">
+                  <button class="bg-option" data-bg="none">
+                    <span class="no-bg">Nenhum</span>
+                  </button>
+                  <button class="bg-option" data-bg="bg1.jpg">
+                    <img src="assets/bg1.jpg" alt="Fundo 1" />
+                  </button>
+                  <button class="bg-option" data-bg="bg2.jpg">
+                    <img src="assets/bg2.jpg" alt="Fundo 2" />
+                  </button>
+                  <button class="bg-option" data-bg="bg3.jpg">
+                    <img src="assets/bg3.jpg" alt="Fundo 3" />
+                  </button>
+                </div>
+              </div>
 
-                        <button id="config-lang" class="dropdown-item" role="menuitem">Idiomas</button>
-                        <button id="config-share" class="dropdown-item" role="menuitem">Compartilhar</button>
-                    </div>
-                </li>
-            </ul>
-        </nav>
+              <button id="config-lang" class="dropdown-item" role="menuitem">
+                Idiomas
+              </button>
+              <div class="dropdown-group">
+                <p class="dropdown-label">Idiomas</p>
+                <div class="lang-options">
+                  <button class="lang-option" data-lang="pt">Português</button>
+                  <button class="lang-option" data-lang="en">English</button>
+                  <button class="lang-option" data-lang="es">Español</button>
+                </div>
+              </div>
+
+              <button id="config-share" class="dropdown-item" role="menuitem">
+                Compartilhar
+              </button>
+            </div>
+          </li>
+        </ul>
+      </nav>
     </header>
 
     <main id="main" role="main">
+      <!-- HOME -->
+      <section id="home-section" class="container section">
+        <h1 class="title">Lista de Compras</h1>
 
-        <!-- HOME -->
-        <section id="home-section" class="container section">
-            <h1 class="title">Lista de Compras</h1>
-
-            <!-- Pesquisa Global -->
-            <div class="search-row" role="search">
-                <input id="search-input" type="search" class="input" placeholder="Pesquisar item em todas as listas..."
-                    aria-label="Pesquisar item em todas as listas" />
-                <button id="btn-search" class="btn">Pesquisar</button>
-            </div>
-
-            <div id="search-results" class="results"></div>
-
-            <div class="divider"></div>
-
-            <!-- CTA Nova Lista -->
-            <div class="new-list-cta">
-                <button id="btn-nova-lista" class="btn-outline">Criar nova lista</button>
-                <p class="hint">Você pode manter até 4 listas ativas.</p>
-            </div>
-        </section>
-
-        <!-- MINHAS LISTAS -->
-        <section id="listas-section" class="container section hidden" aria-labelledby="listas-title">
-            <div class="section-top">
-                <button id="btn-voltar-listas" class="link-back">
-                    <img src="assets/arrow-left.png" alt="" aria-hidden="true" class="icon-back" />
-                    <span>Voltar</span>
-                </button>
-                <h2 id="listas-title" class="subtitle">Minhas Listas</h2>
-            </div>
-            <div id="listas-container" class="cards"></div>
-        </section>
-
-        <!-- ITENS DA LISTA -->
-        <section id="itens-section" class="container section hidden" aria-labelledby="titulo-lista">
-            <div class="section-top">
-                <button id="btn-voltar-itens" class="link-back">
-                    <img src="assets/arrow-left.png" alt="" aria-hidden="true" class="icon-back" />
-                    <span>Voltar</span>
-                </button>
-                <h2 id="titulo-lista" class="subtitle">Itens</h2>
-            </div>
-            <form id="form-adicionar" class="form" aria-label="Adicionar item">
-                <label for="input-item" class="sr-only">Adicionar item</label>
-                <div class="form-row">
-                    <select id="select-categoria" class="select" aria-label="Categoria">
-                        <option value="limpeza">Limpeza e Higiêne</option>
-                        <option value="hortifruti">Hortifruti</option>
-                        <option value="mercearia">Mercearia</option>
-                        <option value="bebidas">Bebidas</option>
-                        <option value="acougue">Açougue</option>
-                        <option value="variedades">Variedades</option>
-                    </select>
-
-                    <input id="input-item" type="text" class="input" placeholder="Adicione um novo item"
-                        autocomplete="off" />
-                    <button id="btn-adicionar" class="btn" type="submit">Adicionar item</button>
-                </div>
-            </form>
-
-            <div id="categorias-container" class="categorias"></div>
-        </section>
-
-        <!-- Modal Nova Lista -->
-        <div id="modal-lista" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-            <div class="modal-card">
-                <div class="modal-top">
-                    <h3 id="modal-title">Escolha o tipo de lista</h3>
-                    <button id="close-modal" class="icon-btn" aria-label="Fechar">
-                        <img src="assets/delete-small.png" alt="" />
-                    </button>
-                </div>
-
-                <div class="opcoes-grid">
-                    <button class="opcao card-dia" data-tipo="dia">Lista do Dia</button>
-                    <button class="opcao card-semana" data-tipo="semana">Lista da Semana</button>
-                    <button class="opcao card-quinzena" data-tipo="quinzena">Lista da Quinzena</button>
-                    <button class="opcao card-mes" data-tipo="mes">Lista do Mês</button>
-                </div>
-            </div>
+        <!-- Pesquisa Global -->
+        <div class="search-row" role="search">
+          <input
+            id="search-input"
+            type="search"
+            class="input"
+            placeholder="Pesquisar item em todas as listas..."
+            aria-label="Pesquisar item em todas as listas"
+          />
+          <button id="btn-search" class="btn">Pesquisar</button>
         </div>
 
-        <!-- Toast -->
-        <div id="toast" class="toast" role="status" aria-live="assertive" aria-atomic="true" hidden>
-            <img src="assets/warning-circle-filled.png" alt="" class="icon" />
-            <span id="toast-msg"></span>
-            <button id="toast-close" class="icon-btn toast-close" aria-label="Fechar notificação">
-                <img src="assets/delete-small.png" alt="Fechar" />
+        <div id="search-results" class="results"></div>
+
+        <div class="divider"></div>
+
+        <!-- CTA Nova Lista -->
+        <div class="new-list-cta">
+          <button id="btn-nova-lista" class="btn-outline">
+            Criar nova lista
+          </button>
+          <p class="hint">Você pode manter até 4 listas ativas.</p>
+        </div>
+      </section>
+
+      <!-- MINHAS LISTAS -->
+      <section
+        id="listas-section"
+        class="container section hidden"
+        aria-labelledby="listas-title"
+      >
+        <div class="section-top">
+          <button id="btn-voltar-listas" class="link-back">
+            <img
+              src="assets/arrow-left.png"
+              alt=""
+              aria-hidden="true"
+              class="icon-back"
+            />
+            <span>Voltar</span>
+          </button>
+          <h2 id="listas-title" class="subtitle">Minhas Listas</h2>
+        </div>
+        <div id="listas-container" class="cards"></div>
+      </section>
+
+      <!-- ITENS DA LISTA -->
+      <section
+        id="itens-section"
+        class="container section hidden"
+        aria-labelledby="titulo-lista"
+      >
+        <div class="section-top">
+          <button id="btn-voltar-itens" class="link-back">
+            <img
+              src="assets/arrow-left.png"
+              alt=""
+              aria-hidden="true"
+              class="icon-back"
+            />
+            <span>Voltar</span>
+          </button>
+          <h2 id="titulo-lista" class="subtitle">Itens</h2>
+        </div>
+        <form id="form-adicionar" class="form" aria-label="Adicionar item">
+          <label for="input-item" class="sr-only">Adicionar item</label>
+          <div class="form-row">
+            <select id="select-categoria" class="select" aria-label="Categoria">
+              <option value="limpeza">Limpeza e Higiêne</option>
+              <option value="hortifruti">Hortifruti</option>
+              <option value="mercearia">Mercearia</option>
+              <option value="bebidas">Bebidas</option>
+              <option value="acougue">Açougue</option>
+              <option value="variedades">Variedades</option>
+            </select>
+
+            <input
+              id="input-item"
+              type="text"
+              class="input"
+              placeholder="Adicione um novo item"
+              autocomplete="off"
+            />
+            <button id="btn-adicionar" class="btn" type="submit">
+              Adicionar item
             </button>
+          </div>
+        </form>
+
+        <div id="categorias-container" class="categorias"></div>
+      </section>
+
+      <!-- Modal Nova Lista -->
+      <div
+        id="modal-lista"
+        class="modal hidden"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+      >
+        <div class="modal-card">
+          <div class="modal-top">
+            <h3 id="modal-title">Escolha o tipo de lista</h3>
+            <button id="close-modal" class="icon-btn" aria-label="Fechar">
+              <img src="assets/delete-small.png" alt="" />
+            </button>
+          </div>
+
+          <div class="opcoes-grid">
+            <button class="opcao card-dia" data-tipo="dia">Lista do Dia</button>
+            <button class="opcao card-semana" data-tipo="semana">
+              Lista da Semana
+            </button>
+            <button class="opcao card-quinzena" data-tipo="quinzena">
+              Lista da Quinzena
+            </button>
+            <button class="opcao card-mes" data-tipo="mes">Lista do Mês</button>
+          </div>
         </div>
+      </div>
+
+      <!-- Toast -->
+      <div
+        id="toast"
+        class="toast"
+        role="status"
+        aria-live="assertive"
+        aria-atomic="true"
+        hidden
+      >
+        <img src="assets/warning-circle-filled.png" alt="" class="icon" />
+        <span id="toast-msg"></span>
+        <button
+          id="toast-close"
+          class="icon-btn toast-close"
+          aria-label="Fechar notificação"
+        >
+          <img src="assets/delete-small.png" alt="Fechar" />
+        </button>
+      </div>
     </main>
 
     <script src="main.js" defer></script>
-</body>
-
+  </body>
 </html>

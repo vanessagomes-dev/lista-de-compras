@@ -1,0 +1,60 @@
+{
+  "nav": {
+    "home": "Home",
+    "myLists": "Minhas Listas"
+  },
+  "buttons": {
+    "addItem": "Adicionar item",
+    "startNewList": "Iniciar nova lista",
+    "search": "Pesquisar",
+    "back": "Voltar",
+    "none": "Nenhum"
+  },
+  "placeholders": {
+    "addItem": "Adicione um novo item",
+    "search": "Pesquisar item em todas as listas..."
+  },
+  "titles": {
+    "appTitle": "Lista de Compras"
+  },
+  "categories": {
+    "limpeza": "Limpeza e Higiene",
+    "hortifruti": "Hortifruti",
+    "mercearia": "Mercearia",
+    "bebidas": "Bebidas",
+    "acougue": "Açougue",
+    "variedades": "Variedades"
+  },
+  "types": {
+    "dia": "Lista do Dia",
+    "semana": "Lista da Semana",
+    "quinzena": "Lista da Quinzena",
+    "mes": "Lista do Mês"
+  },
+  "messages": {
+    "listCreated": "{name} criada!",
+    "listColorChanged": "Cor da lista alterada!",
+    "bgApplied": "Papel de parede aplicado!",
+    "bgRemoved": "Fundo removido!",
+    "openListToConfigure": "Abra uma lista para configurar."
+  },
+  "search": {
+    "noResults": "Item não encontrado."
+  },
+  "items": {
+    "pao de forma": "Pão de forma",
+    "ovo": "Ovo",
+    "banana": "Banana",
+    "arroz": "Arroz",
+    "feijao": "Feijão",
+    "macarrao": "Macarrão",
+    "agua": "Água",
+    "cachaca": "Cachaça",
+    "bife": "Bife",
+    "frango": "Frango",
+    "papel higienico": "Papel higiênico",
+    "sabonete": "Sabonete",
+    "suco de laranja": "Suco de laranja",
+    "cafe preto": "Café preto"
+  }
+}

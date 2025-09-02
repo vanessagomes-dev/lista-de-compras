@@ -1,0 +1,60 @@
+{
+  "nav": {
+    "home": "Home",
+    "myLists": "Mis listas"
+  },
+  "buttons": {
+    "addItem": "Agregar item",
+    "startNewList": "Iniciar nueva lista",
+    "search": "Buscar",
+    "back": "Volver",
+    "none": "Ninguno"
+  },
+  "placeholders": {
+    "addItem": "Agrega un nuevo item",
+    "search": "Buscar item en todas las listas..."
+  },
+  "titles": {
+    "appTitle": "Lista de Compras"
+  },
+  "categories": {
+    "limpeza": "Limpieza",
+    "hortifruti": "Frutas y Verduras",
+    "mercearia": "Despensa",
+    "bebidas": "Bebidas",
+    "acougue": "Carnicería",
+    "variedades": "Variedades"
+  },
+  "types": {
+    "dia": "Lista del Día",
+    "semana": "Lista de la Semana",
+    "quinzena": "Lista de 15 días",
+    "mes": "Lista del Mes"
+  },
+  "messages": {
+    "listCreated": "¡{name} creada!",
+    "listColorChanged": "¡Color de lista actualizado!",
+    "bgApplied": "¡Fondo aplicado!",
+    "bgRemoved": "¡Fondo eliminado!",
+    "openListToConfigure": "Abre una lista para configurar."
+  },
+  "search": {
+    "noResults": "Item no encontrado."
+  },
+  "items": {
+    "pao de forma": "Pan rebanado",
+    "ovo": "Huevo",
+    "banana": "Banana",
+    "arroz": "Arroz",
+    "feijao": "Frijoles",
+    "macarrao": "Pasta",
+    "agua": "Agua",
+    "cachaca": "Cachaça",
+    "bife": "Bistec",
+    "frango": "Pollo",
+    "papel higienico": "Papel higiénico",
+    "sabonete": "Jabón",
+    "suco de laranja": "Jugo de naranja",
+    "cafe preto": "Café negro"
+  }
+}

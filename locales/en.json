@@ -1,0 +1,60 @@
+{
+  "nav": {
+    "home": "Home",
+    "myLists": "My Lists"
+  },
+  "buttons": {
+    "addItem": "Add item",
+    "startNewList": "Start new list",
+    "search": "Search",
+    "back": "Back",
+    "none": "None"
+  },
+  "placeholders": {
+    "addItem": "Add a new item",
+    "search": "Search item across lists..."
+  },
+  "titles": {
+    "appTitle": "Shopping List"
+  },
+  "categories": {
+    "limpeza": "Cleaning",
+    "hortifruti": "Produce",
+    "mercearia": "Grocery",
+    "bebidas": "Beverages",
+    "acougue": "Butcher",
+    "variedades": "Varieties"
+  },
+  "types": {
+    "dia": "Day list",
+    "semana": "Weekly list",
+    "quinzena": "Fortnight list",
+    "mes": "Monthly list"
+  },
+  "messages": {
+    "listCreated": "{name} created!",
+    "listColorChanged": "List color changed!",
+    "bgApplied": "Wallpaper applied!",
+    "bgRemoved": "Background removed!",
+    "openListToConfigure": "Open a list to configure."
+  },
+  "search": {
+    "noResults": "Item not found."
+  },
+  "items": {
+    "pao de forma": "Sliced bread",
+    "ovo": "Egg",
+    "banana": "Banana",
+    "arroz": "Rice",
+    "feijao": "Beans",
+    "macarrao": "Pasta",
+    "agua": "Water",
+    "cachaca": "Cachaça",
+    "bife": "Beef",
+    "frango": "Chicken",
+    "papel higienico": "Toilet paper",
+    "sabonete": "Soap",
+    "suco de laranja": "Orange juice",
+    "cafe preto": "Black coffee"
+  }
+}
