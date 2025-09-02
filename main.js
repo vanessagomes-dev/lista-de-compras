@@ -148,19 +148,26 @@ document.querySelectorAll(".color-option").forEach(btn => {
 });
 
 // ===== Background selector handler =====
-document.querySelectorAll(".bg-option").forEach(btn => {
+document.querySelectorAll(".bg-option").forEach((btn) => {
   btn.addEventListener("click", () => {
+    const bg = btn.dataset.bg;
     if (!listaAtiva) {
-      showToast("Abra uma lista para configurar o papel de parede.");
-      dropdown.classList.add("hidden");
+      showToast("Abra uma lista para alterar o fundo.");
       return;
     }
-    const bg = btn.dataset.bg;
-    listaAtiva.bg = bg || null;
+
+    if (bg === "none") {
+      listaAtiva.bg = null; // remove fundo
+      document.body.style.backgroundImage = "";
+      showToast("Fundo removido com sucesso!");
+    } else {
+      listaAtiva.bg = bg;
+      document.body.style.backgroundImage = `url('assets/${bg}')`;
+      showToast("Papel de parede aplicado!");
+    }
+
     save();
-    aplicarEstiloLista();
     dropdown.classList.add("hidden");
-    showToast("Papel de parede aplicado!");
   });
 });
 
