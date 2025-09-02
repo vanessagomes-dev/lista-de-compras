@@ -9,25 +9,12 @@ const TIPOS_LISTA_NOME = {
   mes: "Lista do Mês",
 };
 
-// ordem fixa de categorias
-const ALL_CATEGORIES = [
-  "limpeza",
-  "hortifruti",
-  "mercearia",
-  "bebidas",
-  "acougue",
-  "variedades",
-];
+const ALL_CATEGORIES = ["limpeza", "hortifruti", "mercearia", "bebidas", "acougue", "variedades"];
 
-// ====== Normalize listas carregadas ======
 function ensureCategoriaKeys(lista) {
-  if (!lista.categorias || typeof lista.categorias !== "object") {
-    lista.categorias = {};
-  }
+  if (!lista.categorias || typeof lista.categorias !== "object") lista.categorias = {};
   ALL_CATEGORIES.forEach((cat) => {
-    if (!Object.prototype.hasOwnProperty.call(lista.categorias, cat)) {
-      lista.categorias[cat] = [];
-    }
+    if (!Object.prototype.hasOwnProperty.call(lista.categorias, cat)) lista.categorias[cat] = [];
   });
   return lista;
 }
@@ -68,29 +55,25 @@ const toast = document.getElementById("toast");
 const toastMsg = document.getElementById("toast-msg");
 const toastClose = document.getElementById("toast-close");
 
-// ====== Helpers ======
+// ===== Helpers =====
 const save = () => localStorage.setItem(STORAGE_KEY, JSON.stringify(listas));
 const show = (el) => el && el.classList.remove("hidden");
 const hide = (el) => el && el.classList.add("hidden");
 
 const showSection = (section) => {
-  hide(homeSection);
-  hide(listasSection);
-  hide(itensSection);
+  hide(homeSection); hide(listasSection); hide(itensSection);
   show(section);
-  document
-    .querySelectorAll(".nav-link")
-    .forEach((l) => l.classList.remove("active"));
+  document.querySelectorAll(".nav-link").forEach((l) => l.classList.remove("active"));
 };
 
-// ====== Toast (garante limpar timeout) ======
+// ===== Toast =====
 let toastTimeout;
 const showToast = (msg, timeout = 2500) => {
   if (!toast || !toastMsg) return;
   toastMsg.textContent = msg;
+  toast.hidden = false;
   toast.classList.add("show");
   toast.classList.remove("hide");
-  toast.hidden = false;
 
   if (toastTimeout) clearTimeout(toastTimeout);
   toastTimeout = setTimeout(() => {
@@ -99,41 +82,21 @@ const showToast = (msg, timeout = 2500) => {
     toast.hidden = true;
   }, timeout);
 };
-
-if (toastClose) {
-  toastClose.addEventListener("click", () => {
+document.querySelectorAll(".toast-close").forEach(btn => {
+  btn.addEventListener("click", () => {
     if (!toast) return;
-    toast.classList.remove("show");
-    toast.classList.add("hide");
     toast.hidden = true;
     if (toastTimeout) clearTimeout(toastTimeout);
   });
-}
-
-// ====== Nav ======
-navHome.addEventListener("click", (e) => {
-  e.preventDefault();
-  showSection(homeSection);
-  navHome.classList.add("active");
 });
 
-navListas.addEventListener("click", (e) => {
-  e.preventDefault();
-  renderListas();
-  showSection(listasSection);
-  navListas.classList.add("active");
-});
+// ===== Nav =====
+navHome.addEventListener("click", (e) => { e.preventDefault(); showSection(homeSection); navHome.classList.add("active"); });
+navListas.addEventListener("click", (e) => { e.preventDefault(); renderListas(); showSection(listasSection); navListas.classList.add("active"); });
+btnVoltarListas?.addEventListener("click", () => { showSection(homeSection); navHome.classList.add("active"); });
+btnVoltarItens?.addEventListener("click", () => { showSection(listasSection); navListas.classList.add("active"); });
 
-btnVoltarListas?.addEventListener("click", () => {
-  showSection(homeSection);
-  navHome.classList.add("active");
-});
-btnVoltarItens?.addEventListener("click", () => {
-  showSection(listasSection);
-  navListas.classList.add("active");
-});
-
-// ====== Dropdown Config ======
+// ===== Dropdown Config =====
 if (btnConfig) {
   btnConfig.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -148,79 +111,70 @@ document.addEventListener("click", (e) => {
     btnConfig && btnConfig.setAttribute("aria-expanded", "false");
   }
 });
-document.getElementById("config-colors")?.addEventListener("click", () => {
-  showToast("Em breve: trocar cores 🎨");
-  dropdown.classList.add("hidden");
-});
-document.getElementById("config-lang")?.addEventListener("click", () => {
-  showToast("Em breve: trocar idioma 🌍");
-  dropdown.classList.add("hidden");
-});
-document.getElementById("config-share")?.addEventListener("click", () => {
-  showToast("Em breve: compartilhar lista 🔗");
-  dropdown.classList.add("hidden");
-});
 
-// Definir cor da lista
-document.querySelectorAll(".color-option").forEach((btn) => {
+// ===== Color map =====
+const COLOR_MAP = {
+  azul: "#3b82f6",
+  rosa: "#ec4899",
+  verde: "#22c55e",
+  laranja: "#f97316",
+  roxo: "#8b5cf6",
+  brand: "#ca3884"
+};
+
+// ===== Color selector handler =====
+document.querySelectorAll(".color-option").forEach(btn => {
   btn.addEventListener("click", () => {
     if (!listaAtiva) {
-      showToast("Abra uma lista para configurar.");
+      showToast("Abra uma lista para configurar a cor.");
+      dropdown.classList.add("hidden");
       return;
     }
-    listaAtiva.color = btn.dataset.color;
+    const key = btn.dataset.color;
+    const hex = COLOR_MAP[key] || key || null;
+    if (!hex) {
+      showToast("Cor inválida.");
+      dropdown.classList.add("hidden");
+      return;
+    }
+
+    listaAtiva.color = hex;
     save();
-    renderListas();
-    showToast(`Cor da lista alterada para ${btn.dataset.color}`);
+    renderListas(); 
+    aplicarEstiloLista();
+    dropdown.classList.add("hidden");
+    showToast("Cor da lista alterada!");
   });
 });
 
-// Definir papel de parede
-document.querySelectorAll(".bg-option").forEach((btn) => {
+// ===== Background selector handler =====
+document.querySelectorAll(".bg-option").forEach(btn => {
   btn.addEventListener("click", () => {
     if (!listaAtiva) {
-      showToast("Abra uma lista para configurar.");
+      showToast("Abra uma lista para configurar o papel de parede.");
+      dropdown.classList.add("hidden");
       return;
     }
-    listaAtiva.bg = btn.dataset.bg;
+    const bg = btn.dataset.bg;
+    listaAtiva.bg = bg || null;
     save();
     aplicarEstiloLista();
+    dropdown.classList.add("hidden");
     showToast("Papel de parede aplicado!");
   });
 });
 
-// Aplicar estilo quando abrir lista
-function aplicarEstiloLista() {
-  if (!listaAtiva) return;
+// ===== Menu placeholders (idioma / compartilhar) =====
+document.getElementById("config-lang")?.addEventListener("click", () => { showToast("Em breve: trocar idioma 🌍"); dropdown.classList.add("hidden"); });
+document.getElementById("config-share")?.addEventListener("click", () => { showToast("Em breve: compartilhar lista 🔗"); dropdown.classList.add("hidden"); });
 
-  // Cor no título / card
-  if (listaAtiva.color) {
-    tituloLista.style.color = listaAtiva.color;
-  }
-
-  // Fundo no container
-  if (listaAtiva.bg) {
-    itensSection.style.backgroundImage = `url("assets/${listaAtiva.bg}")`;
-    itensSection.style.backgroundSize = "cover";
-    itensSection.style.backgroundPosition = "center";
-  } else {
-    itensSection.style.backgroundImage = "none";
-  }
-}
-
-// ====== Modal Nova Lista ======
+// ===== Modal Nova Lista =====
 btnNovaLista?.addEventListener("click", () => {
-  if (listas.length >= 4) {
-    showToast("Limite de 4 listas atingido.");
-    return;
-  }
+  if (listas.length >= 4) { showToast("Limite de 4 listas atingido."); return; }
   show(modalLista);
 });
-
 closeModal?.addEventListener("click", () => hide(modalLista));
-modalLista?.addEventListener("click", (e) => {
-  if (e.target === modalLista) hide(modalLista);
-});
+modalLista?.addEventListener("click", (e) => { if (e.target === modalLista) hide(modalLista); });
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     hide(modalLista);
@@ -229,47 +183,29 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-// criação de listas pelo modal
 document.querySelectorAll(".opcao").forEach((btn) => {
   btn.addEventListener("click", () => {
     const tipo = btn.dataset.tipo;
     if (!tipo) return;
-
-    if (listas.some((l) => l.tipo === tipo)) {
-      showToast(`${TIPOS_LISTA_NOME[tipo]} já foi criada!`);
-      hide(modalLista);
-      return;
-    }
-    if (listas.length >= 4) {
-      showToast("Limite de 4 listas atingido.");
-      hide(modalLista);
-      return;
-    }
+    if (listas.some((l) => l.tipo === tipo)) { showToast(`${TIPOS_LISTA_NOME[tipo]} já foi criada!`); hide(modalLista); return; }
+    if (listas.length >= 4) { showToast("Limite de 4 listas atingido."); hide(modalLista); return; }
 
     const novaLista = {
       id: Date.now(),
       tipo,
-      categorias: {
-        limpeza: [],
-        hortifruti: [],
-        mercearia: [],
-        bebidas: [],
-        acougue: [],
-        variedades: [],
-      },
+      categorias: { limpeza: [], hortifruti: [], mercearia: [], bebidas: [], acougue: [], variedades: [] },
+      color: null,
+      bg: null
     };
 
     listas.push(ensureCategoriaKeys(novaLista));
-    save();
-    renderListas();
-    hide(modalLista);
-    showSection(listasSection);
-    navListas.classList.add("active");
+    save(); renderListas(); hide(modalLista);
+    showSection(listasSection); navListas.classList.add("active");
     showToast(`${TIPOS_LISTA_NOME[tipo]} criada!`);
   });
 });
 
-// ====== Render Listas ======
+// ===== Render Listas (aplica cor no cartão e badge) =====
 function renderListas() {
   listasContainer.innerHTML = "";
   if (!listas.length) {
@@ -281,7 +217,17 @@ function renderListas() {
     const card = document.createElement("div");
     card.className = `lista-card card-${lista.tipo}`;
 
+    // badge/color indicator
+    const badge = document.createElement("span");
+    badge.className = "list-badge";
+    badge.setAttribute("aria-hidden", "true");
+    if (lista.color) {
+      badge.style.background = lista.color;
+      card.style.borderColor = lista.color;
+    }
+
     const nome = document.createElement("span");
+    nome.className = "lista-nome";
     nome.textContent = TIPOS_LISTA_NOME[lista.tipo] || `Lista (${lista.tipo})`;
 
     const del = document.createElement("button");
@@ -290,58 +236,49 @@ function renderListas() {
     del.addEventListener("click", (e) => {
       e.stopPropagation();
       listas = listas.filter((l) => l.id !== lista.id);
-      save();
-      renderListas();
-      showToast(`${TIPOS_LISTA_NOME[lista.tipo]} excluída!`);
+      save(); renderListas(); showToast(`${TIPOS_LISTA_NOME[lista.tipo]} excluída!`);
     });
 
-    card.appendChild(nome);
+    const leftWrap = document.createElement("div");
+    leftWrap.style.display = "flex";
+    leftWrap.style.alignItems = "center";
+    leftWrap.style.gap = "8px";
+    leftWrap.appendChild(badge);
+    leftWrap.appendChild(nome);
+
+    card.appendChild(leftWrap);
     card.appendChild(del);
+
     card.addEventListener("click", () => abrirLista(lista.id));
     listasContainer.appendChild(card);
   });
 }
 
-// ====== Abrir Lista ======
+// ===== Abrir Lista =====
 function abrirLista(id) {
-  aplicarEstiloLista();
   listaAtiva = listas.find((l) => l.id === id);
   if (!listaAtiva) return;
-
-  // garante que listaAtiva tem todas as categorias
   ensureCategoriaKeys(listaAtiva);
-
   tituloLista.textContent = `${TIPOS_LISTA_NOME[listaAtiva.tipo]} - Itens`;
   renderCategorias();
-  show(itensSection);
-  hide(listasSection);
-  hide(homeSection);
-
+  aplicarEstiloLista();
+  show(itensSection); hide(listasSection); hide(homeSection);
   if (abrirLista.destacarId) {
-    const el = categoriasContainer.querySelector(
-      `[data-id="${abrirLista.destacarId}"]`
-    );
-    if (el) {
-      el.classList.add("destacado");
-      setTimeout(() => el.classList.remove("destacado"), 3000);
-    }
+    const el = categoriasContainer.querySelector(`[data-id="${abrirLista.destacarId}"]`);
+    if (el) { el.classList.add("destacado"); setTimeout(() => el.classList.remove("destacado"), 3000); }
     abrirLista.destacarId = null;
   }
 }
 
-// ====== Render Categorias / Itens ======
+// ===== Render Categorias / Itens =====
 function renderCategorias() {
   categoriasContainer.innerHTML = "";
-
-  // renderiza todas as categorias na ordem ALL_CATEGORIES
+  if (!listaAtiva) return;
   ALL_CATEGORIES.forEach((cat) => {
     const ul = document.createElement("ul");
     ul.className = "lista";
     ul.innerHTML = `<h3>${cat}</h3>`;
-
-    const items =
-      (listaAtiva && listaAtiva.categorias && listaAtiva.categorias[cat]) || [];
-
+    const items = (listaAtiva.categorias && listaAtiva.categorias[cat]) || [];
     if (!items.length) {
       const vazio = document.createElement("li");
       vazio.className = "item vazio";
@@ -354,15 +291,11 @@ function renderCategorias() {
         li.dataset.id = item.id;
         li.innerHTML = `
           <div class="item-left">
-            <input type="checkbox" ${
-              item.done ? "checked" : ""
-            } data-cat="${cat}" data-id="${item.id}">
+            <input type="checkbox" ${item.done ? "checked" : ""} data-cat="${cat}" data-id="${item.id}">
             <div class="item-title">${escapeHtml(item.text)}</div>
           </div>
           <div class="item-controls">
-            <button class="icon-btn" data-action="delete" data-cat="${cat}" data-id="${
-          item.id
-        }">
+            <button class="icon-btn" data-action="delete" data-cat="${cat}" data-id="${item.id}">
               <img src="assets/delete.png" alt="Remover"/>
             </button>
           </div>
@@ -370,105 +303,64 @@ function renderCategorias() {
         ul.appendChild(li);
       });
     }
-
     categoriasContainer.appendChild(ul);
   });
 }
 
-// ====== Add Item ======
+// ===== Add Item =====
 form?.addEventListener("submit", (e) => {
   e.preventDefault();
-  if (!listaAtiva) {
-    showToast("Abra uma lista para adicionar itens.");
-    return;
-  }
-
+  if (!listaAtiva) { showToast("Abra uma lista para adicionar itens."); return; }
   const text = inputItem.value.trim();
   const cat = selectCategoria ? selectCategoria.value : null;
   if (!text || !cat) return;
-
-  // garante que a categoria exista (cria se não existir)
-  if (!listaAtiva.categorias[cat]) {
-    listaAtiva.categorias[cat] = [];
-  }
-
+  if (!listaAtiva.categorias[cat]) listaAtiva.categorias[cat] = [];
   const listaItens = listaAtiva.categorias[cat];
-  if (listaItens.length >= 10) {
-    showToast("Cada categoria só pode ter até 10 itens.");
-    return;
-  }
+  if (listaItens.length >= 10) { showToast("Cada categoria só pode ter até 10 itens."); return; }
   const totalItens = Object.values(listaAtiva.categorias).flat().length;
-  if (totalItens >= 60) {
-    showToast("Cada lista só pode ter até 60 itens.");
-    return;
-  }
-
+  if (totalItens >= 60) { showToast("Cada lista só pode ter até 60 itens."); return; }
   listaItens.push({ id: Date.now(), text, done: false });
-  save();
-  renderCategorias();
-  inputItem.value = "";
+  save(); renderCategorias(); inputItem.value = "";
 });
 
-// Toggle / Delete
+// Toggle/Delete handlers
 categoriasContainer?.addEventListener("click", (e) => {
   if (e.target.matches("input[type=checkbox]")) {
-    const cat = e.target.dataset.cat;
-    const id = Number(e.target.dataset.id);
+    const cat = e.target.dataset.cat; const id = Number(e.target.dataset.id);
     const item = listaAtiva.categorias[cat].find((i) => i.id === id);
-    if (item) {
-      item.done = e.target.checked;
-      save();
-    }
+    if (item) { item.done = e.target.checked; save(); }
   }
   const delBtn = e.target.closest("[data-action=delete]");
   if (delBtn) {
-    const cat = delBtn.dataset.cat;
-    const id = Number(delBtn.dataset.id);
-    listaAtiva.categorias[cat] = listaAtiva.categorias[cat].filter(
-      (i) => i.id !== id
-    );
-    save();
-    renderCategorias();
+    const cat = delBtn.dataset.cat; const id = Number(delBtn.dataset.id);
+    listaAtiva.categorias[cat] = listaAtiva.categorias[cat].filter((i) => i.id !== id);
+    save(); renderCategorias();
   }
 });
 
-// ====== Pesquisa Global ======
+// ===== Pesquisa Global =====
 function pesquisar() {
   const termo = inputSearch.value.trim().toLowerCase();
   searchResults.innerHTML = "";
-
-  if (!termo) {
-    searchResults.innerHTML = "<p>Digite um termo para pesquisar.</p>";
-    return;
-  }
-
+  if (!termo) { searchResults.innerHTML = "<p>Digite um termo para pesquisar.</p>"; return; }
   let encontrados = [];
-
   listas.forEach((lista) => {
     let itensEncontrados = [];
     Object.values(lista.categorias).forEach((categoria) => {
       categoria.forEach((item) => {
-        if (item.text.toLowerCase().includes(termo))
-          itensEncontrados.push(item);
+        if (item.text.toLowerCase().includes(termo)) itensEncontrados.push(item);
       });
     });
-    if (itensEncontrados.length)
-      encontrados.push({ lista, itens: itensEncontrados });
+    if (itensEncontrados.length) encontrados.push({ lista, itens: itensEncontrados });
   });
 
-  if (!encontrados.length) {
-    searchResults.innerHTML = `<p class="nenhum">Item não encontrado.</p>`;
-  } else {
+  if (!encontrados.length) { searchResults.innerHTML = `<p class="nenhum">Item não encontrado.</p>`; }
+  else {
     encontrados.forEach(({ lista, itens }) => {
       const wrap = document.createElement("div");
       wrap.className = `lista-card card-${lista.tipo} resultado-card`;
       wrap.dataset.id = lista.id;
-
-      const itensHtml = itens
-        .slice(0, 5)
-        .map((i) => `<span class="tag">${escapeHtml(i.text)}</span>`)
-        .join(" ");
-
+      const itensHtml = itens.slice(0, 5).map((i) => `<span class="tag">${escapeHtml(i.text)}</span>`).join(" ");
       wrap.innerHTML = `
         <span>${TIPOS_LISTA_NOME[lista.tipo]}</span>
         <div>${itensHtml}</div>
@@ -479,52 +371,52 @@ function pesquisar() {
       searchResults.appendChild(wrap);
     });
   }
-
   inputSearch.value = "";
 }
-
 btnSearch?.addEventListener("click", pesquisar);
-inputSearch?.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    pesquisar();
-  }
-});
-
+inputSearch?.addEventListener("keypress", (e) => { if (e.key === "Enter") { e.preventDefault(); pesquisar(); } });
 searchResults?.addEventListener("click", (e) => {
   const card = e.target.closest(".resultado-card");
-  if (card && !e.target.closest(".limpar-resultado")) {
-    abrirLista(Number(card.dataset.id));
-  }
-  if (e.target.closest(".limpar-resultado")) {
-    e.target.closest(".resultado-card").remove();
-    if (!searchResults.querySelector(".resultado-card"))
-      searchResults.innerHTML = "";
-  }
+  if (card && !e.target.closest(".limpar-resultado")) abrirLista(Number(card.dataset.id));
+  if (e.target.closest(".limpar-resultado")) { e.target.closest(".resultado-card").remove(); if (!searchResults.querySelector(".resultado-card")) searchResults.innerHTML = ""; }
 });
 
-// Toast close (fallback caso id diferir)
-document.querySelectorAll(".toast-close").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    if (toast) {
-      toast.hidden = true;
-      if (toastTimeout) clearTimeout(toastTimeout);
+// ===== aplicar Estilo Lista =====
+function aplicarEstiloLista() {
+  if (!listaAtiva) return;
+  // aplicar cor no título e na borda do container de itens
+  if (listaAtiva.color) {
+    tituloLista.style.color = listaAtiva.color;
+    if (itensSection) { itensSection.style.border = `2px solid ${listaAtiva.color}`; }
+  } else {
+    tituloLista.style.color = "";
+    if (itensSection) { itensSection.style.border = ""; }
+  }
+
+  // aplicar fundo 
+  if (listaAtiva.bg) {
+    if (itensSection) {
+      itensSection.style.backgroundImage = `url("assets/${listaAtiva.bg}")`;
+      itensSection.style.backgroundSize = "cover";
+      itensSection.style.backgroundPosition = "center";
     }
-  });
-});
+  } else {
+    if (itensSection) {
+      itensSection.style.backgroundImage = "";
+      itensSection.style.backgroundSize = "";
+      itensSection.style.backgroundPosition = "";
+    }
+  }
+}
 
-// ====== Utils ======
+// ===== Utils =====
 function escapeHtml(str) {
-  return String(str).replace(
-    /[&"'<>]/g,
-    (tag) =>
-      ({ "&": "&amp;", '"': "&quot;", "'": "&#39;", "<": "&lt;", ">": "&gt;" }[
-        tag
-      ])
+  return String(str).replace(/[&"'<>]/g, (tag) =>
+    ({ "&":"&amp;", '"':"&quot;", "'":"&#39;", "<":"&lt;", ">":"&gt;" }[tag])
   );
 }
 
-// ====== Init ======
+// ===== Init =====
 renderListas();
 showSection(homeSection);
 navHome.classList.add("active");

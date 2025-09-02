@@ -330,6 +330,24 @@ body {
     border: 1px solid var(--border);
     border-radius: 12px
 }
+/* badge/color indicator na listagem */
+.list-badge {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display:inline-block;
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.2) inset;
+}
+.lista-card {
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.lista-nome {
+  font-weight:600;
+  color: var(--content-secondary);
+}
 
 .lista>h3 {
     margin: 12px 12px 6px;
