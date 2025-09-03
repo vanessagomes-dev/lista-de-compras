@@ -379,7 +379,7 @@ function renderListas() {
     card.style.display = "flex";
     card.style.justifyContent = "space-between";
     card.style.alignItems = "center";
-    card.style.cursor = "pointer"; // deixa claro que é clicável
+    card.style.cursor = "pointer";
 
     // badge/color indicator
     const badge = document.createElement("span");
@@ -389,7 +389,7 @@ function renderListas() {
       badge.style.background = lista.color;
       card.style.borderColor = lista.color;
 
-      // Hover dinâmico baseado na cor da lista
+      // Hover dinâmico baseado na cor
       card.addEventListener("mouseenter", () => {
         card.style.boxShadow = `0 4px 12px ${lista.color}40`;
       });
@@ -408,19 +408,48 @@ function renderListas() {
     actions.style.display = "flex";
     actions.style.gap = "10px";
 
+    // ====== BOTÃO COMPARTILHAR ======
     const btnShare = document.createElement("button");
     btnShare.className = "icon-btn";
     btnShare.innerHTML = `<img src="assets/share.png" alt="Compartilhar lista" style="width:18px;height:18px;">`;
-    btnShare.addEventListener("click", (e) => {
-      e.stopPropagation(); // evita abrir a lista
-      showToast(`Compartilhar: ${TIPOS_LISTA_NOME[lista.tipo]} (em breve)`);
+    btnShare.addEventListener("click", async (e) => {
+      e.stopPropagation();
+
+      // monta o texto da lista
+      let conteudo = `${TIPOS_LISTA_NOME[lista.tipo]}\n\n`;
+      Object.keys(lista.categorias).forEach((cat) => {
+        const itens = lista.categorias[cat];
+        if (itens.length) {
+          conteudo += `📌 ${cat}:\n`;
+          itens.forEach((item) => {
+            conteudo += `- ${item.text}${item.done ? " ✔️" : ""}\n`;
+          });
+          conteudo += "\n";
+        }
+      });
+
+      try {
+        if (navigator.share) {
+          await navigator.share({
+            title: TIPOS_LISTA_NOME[lista.tipo],
+            text: conteudo,
+          });
+        } else {
+          await navigator.clipboard.writeText(conteudo);
+          showToast("Lista copiada para a área de transferência!");
+        }
+      } catch (err) {
+        console.error("Erro ao compartilhar:", err);
+        showToast("Não foi possível compartilhar a lista.");
+      }
     });
 
+    // botão excluir
     const btnDelete = document.createElement("button");
     btnDelete.className = "icon-btn";
     btnDelete.innerHTML = `<img src="assets/delete.png" alt="Excluir lista" style="width:18px;height:18px;">`;
     btnDelete.addEventListener("click", (e) => {
-      e.stopPropagation(); // evita abrir a lista
+      e.stopPropagation();
       listas = listas.filter((l) => l.id !== lista.id);
       save();
       renderListas();
@@ -441,13 +470,12 @@ function renderListas() {
     card.appendChild(actions);
 
     // clique no card abre a lista
-    card.addEventListener("click", () => {
-      abrirLista(lista.id);
-    });
+    card.addEventListener("click", () => abrirLista(lista.id));
 
     listasContainer.appendChild(card);
   });
 }
+
 // ===== Abrir Lista =====
 function abrirLista(listaId) {
   const lista = listas.find((l) => l.id === listaId);
