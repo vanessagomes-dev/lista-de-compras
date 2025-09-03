@@ -108,12 +108,6 @@ function t(path, vars = {}) {
 }
 
 // tenta traduzir texto livre (item). usa glossary presente em translations.items
-function translateItemText(original) {
-  if (!translations || !original) return original;
-  const key = normalizeKey(original);
-  const itemsMap = translations.items || {};
-  return itemsMap[key] || original;
-}
 function applyTranslationsToUI() {
   if (!translations) return;
 
@@ -123,12 +117,32 @@ function applyTranslationsToUI() {
   document.getElementById("nav-listas").textContent =
     translations.nav.myLists || "Minhas Listas";
 
-  // title
+  // título global
   const titleEl = document.querySelector(".title");
   if (titleEl)
     titleEl.textContent = translations.titles?.appTitle || "Lista de Compras";
 
-  // placeholders e botões
+  // título da seção "Minhas Listas"
+  const listasTitle = document.querySelector("#listas-section h2");
+  if (listasTitle)
+    listasTitle.textContent = translations.nav.myLists || "Minhas Listas";
+
+  // título do modal "Escolha o tipo de lista"
+  const modalTitle = document.getElementById("modal-title");
+  if (modalTitle) {
+    modalTitle.textContent =
+      translations.titles?.chooseListType || "Escolha o tipo de lista";
+  }
+
+  // botões dentro do modal (nova lista)
+  document.querySelectorAll("#modal-lista .opcao").forEach((btn) => {
+    const tipo = btn.dataset.tipo;
+    if (tipo && translations.lists?.[tipo]) {
+      btn.textContent = translations.lists[tipo];
+    }
+  });
+
+  // placeholders
   const input = document.getElementById("input-item");
   if (input)
     input.placeholder =
@@ -139,14 +153,21 @@ function applyTranslationsToUI() {
     searchInput.placeholder =
       translations.placeholders?.search || "Pesquisar item...";
 
-  const btnAdd =
-    document.getElementById("btn-adicionar") ||
-    document.getElementById("btn-adicionar") ||
-    document.querySelector(".btn");
+  // botões
+  const btnAdd = document.getElementById("btn-adicionar");
   if (btnAdd)
     btnAdd.textContent = translations.buttons?.addItem || "Adicionar item";
 
-  // traduz labels das categorias no select
+  const btnSearch = document.getElementById("btn-search");
+  if (btnSearch)
+    btnSearch.textContent = translations.buttons?.search || "Pesquisar";
+
+  const btnNovaLista = document.getElementById("btn-nova-lista");
+  if (btnNovaLista)
+    btnNovaLista.textContent =
+      translations.buttons?.startNewList || "Iniciar nova lista";
+
+  // traduz labels do select de categorias
   const select = document.getElementById("select-categoria");
   if (select) {
     Array.from(select.options).forEach((opt) => {
@@ -156,13 +177,6 @@ function applyTranslationsToUI() {
     });
   }
 }
-document.querySelectorAll(".lang-option").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    const lang = btn.dataset.lang;
-    loadTranslations(lang);
-    if (dropdown) dropdown.classList.add("hidden");
-  });
-});
 
 // ===== Helpers =====
 const save = () => localStorage.setItem(STORAGE_KEY, JSON.stringify(listas));
@@ -400,7 +414,10 @@ function renderListas() {
 
     const nome = document.createElement("span");
     nome.className = "lista-nome";
-    nome.textContent = TIPOS_LISTA_NOME[lista.tipo] || `Lista (${lista.tipo})`;
+    nome.textContent =
+      t(`lists.${lista.tipo}`) ||
+      TIPOS_LISTA_NOME[lista.tipo] ||
+      `Lista (${lista.tipo})`;
 
     // botões de ação
     const actions = document.createElement("div");
@@ -470,7 +487,9 @@ function renderListas() {
     card.appendChild(actions);
 
     // clique no card abre a lista
-    card.addEventListener("click", () => abrirLista(lista.id));
+    card.addEventListener("click", () => {
+      abrirLista(lista.id);
+    });
 
     listasContainer.appendChild(card);
   });
@@ -488,15 +507,10 @@ function abrirLista(listaId) {
 
   // Atualiza título da lista
   tituloLista.textContent =
-    TIPOS_LISTA_NOME[lista.tipo] || `Lista (${lista.tipo})`;
+    t(`lists.${lista.tipo}`) || TIPOS_LISTA_NOME[lista.tipo];
 
-  // Renderiza os itens da lista
   renderCategorias();
-
-  // Aplica estilo (cor, fundo etc.)
   aplicarEstiloLista();
-
-  // Troca para a tela de itens
   showSection(itensSection);
 }
 

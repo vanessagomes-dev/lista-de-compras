@@ -15,7 +15,14 @@
     "search": "Search item across lists..."
   },
   "titles": {
-    "appTitle": "Shopping List"
+    "appTitle": "Shopping List",
+    "chooseListType": "Choose the list type"
+  },
+   "lists": {
+    "dia": "Daily List",
+    "semana": "Weekly List",
+    "quinzena": "Biweekly List",
+    "mes": "Monthly List"
   },
   "categories": {
     "limpeza": "Cleaning",
@@ -41,6 +48,7 @@
   "search": {
     "noResults": "Item not found."
   },
+ 
   "items": {
     "pao de forma": "Sliced bread",
     "ovo": "Egg",

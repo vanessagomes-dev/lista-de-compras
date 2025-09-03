@@ -15,7 +15,14 @@
     "search": "Pesquisar item em todas as listas..."
   },
   "titles": {
-    "appTitle": "Lista de Compras"
+    "appTitle": "Lista de Compras",
+    "chooseListType": "Escolha o tipo de lista"
+  },
+   "lists": {
+    "dia": "Lista do Dia",
+    "semana": "Lista da Semana",
+    "quinzena": "Lista da Quinzena",
+    "mes": "Lista do Mês"
   },
   "categories": {
     "limpeza": "Limpeza e Higiene",
@@ -31,6 +38,7 @@
     "quinzena": "Lista da Quinzena",
     "mes": "Lista do Mês"
   },
+ 
   "messages": {
     "listCreated": "{name} criada!",
     "listColorChanged": "Cor da lista alterada!",
